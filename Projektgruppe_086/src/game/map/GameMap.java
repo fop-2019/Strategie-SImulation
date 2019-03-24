@@ -50,9 +50,9 @@ public class GameMap {
 	 */
 	private GameMap(int width, int height, int scale) {
 		this.castleGraph = new Graph<>();
-		this.width = width;
-		this.height = height;
-		this.scale = scale;
+		GameMap.width = width;
+		GameMap.height = height;
+		GameMap.scale = scale;
 	}
 
 	/**

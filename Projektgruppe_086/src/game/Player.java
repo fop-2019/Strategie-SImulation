@@ -1,6 +1,5 @@
 package game;
 
-import game.jokers.DiceJoker;
 import game.map.Castle;
 
 import java.awt.Color;

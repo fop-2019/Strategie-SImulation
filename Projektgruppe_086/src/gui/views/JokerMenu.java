@@ -131,7 +131,8 @@ public class JokerMenu extends View{
         getWindow().setMinimumSize(new Dimension(750, 450));
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void actionPerformed(ActionEvent actionEvent) {
         if(actionEvent.getSource() == btnBack)
             getWindow().setView(new GameMenu(getWindow()));

@@ -6,7 +6,6 @@ import javax.swing.JOptionPane;
 
 import game.Joker;
 import game.Player;
-import game.jokers.DiceJoker;
 
 public class Human extends Player {
     public Human(String name, Color color) {

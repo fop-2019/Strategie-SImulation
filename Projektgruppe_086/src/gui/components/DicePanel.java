@@ -4,12 +4,10 @@ import gui.Resources;
 
 import javax.swing.*;
 
-import game.Player;
-
 import java.awt.*;
-import java.util.Arrays;
 import java.util.Random;
 
+@SuppressWarnings("serial")
 public class DicePanel extends JPanel {
 
     private int diceValues[];

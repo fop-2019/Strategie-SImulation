@@ -9,13 +9,11 @@ import gui.components.NumberChooser;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.font.TextAttribute;
 import java.util.*;
 
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class GameMenu extends View {
 
     private JLabel lblTitle;
@@ -25,8 +23,10 @@ public class GameMenu extends View {
     private JTextArea lblGoalDescription;
 
     private NumberChooser playerCount;
-    private JComboBox mapSize;
-    private JComboBox goal;
+    @SuppressWarnings("rawtypes")
+	private JComboBox mapSize;
+    @SuppressWarnings("rawtypes")
+	private JComboBox goal;
     private JComponent[][] playerConfig;
     private JButton btnContinue, btnBack;
 
@@ -188,7 +188,8 @@ public class GameMenu extends View {
                     }
 
                     Color color = ((ColorChooserButton) playerConfig[i][1]).getSelectedColor();
-                    int playerType = ((JComboBox) playerConfig[i][3]).getSelectedIndex();
+                    @SuppressWarnings("rawtypes")
+					int playerType = ((JComboBox) playerConfig[i][3]).getSelectedIndex();
 
                     if (playerType < 0 || playerType >= GameConstants.PLAYER_TYPES.length) {
                         showErrorMessage(String.format("Bitte geben Sie einen gültigen Spielertyp für Spieler %d an.", i + 1), "Ungültige Eingaben");

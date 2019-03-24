@@ -1,7 +1,6 @@
 package game.jokers;
 
 import game.Joker;
-import game.Player;
 
 public class TroopsJoker extends Joker{
 	
@@ -23,7 +22,6 @@ public class TroopsJoker extends Joker{
 
 	@Override
 	public void show() {
-		// TODO Auto-generated method stub
 		
 	}
 
