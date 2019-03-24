@@ -10,6 +10,7 @@ import base.Graph;
 import base.Node;
 import game.AI;
 import game.Game;
+import game.Joker;
 import game.map.Castle;
 import gui.AttackThread;
 
@@ -100,4 +101,11 @@ public class BasicAI extends AI {
             } while(attackWon);
         }
     }
+
+	@Override
+	public boolean useJoker(Joker type) {
+		return Math.random()<0.5;
+		
+	}
+
 }

@@ -17,6 +17,7 @@ public abstract class AI extends Player {
     protected Random getRandom() {
         return this.random;
     }
+    
 
     protected abstract void actions(Game game) throws InterruptedException;
 
@@ -69,4 +70,5 @@ public abstract class AI extends Player {
             finishTurn();
         }
     }
+
 }

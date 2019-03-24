@@ -110,8 +110,8 @@ public abstract class GraphAlgorithm<T> {
 
 		Node<T> p = destination;
 		while (algorithmNodes.get(p).previous!=null) {
-			if (graph.getEdge(p, algorithmNodes.get(p).previous.node) == null) break;
-			if (!this.isPassable(graph.getEdge(p, algorithmNodes.get(p).previous.node))) break;
+			if (graph.getEdge(p, algorithmNodes.get(p).previous.node) == null) return null;
+			if (!this.isPassable(graph.getEdge(p, algorithmNodes.get(p).previous.node)) || !this.isPassable(algorithmNodes.get(p).previous.node)) return null;
 			path.add(graph.getEdge(p, algorithmNodes.get(p).previous.node));
 			p = algorithmNodes.get(p).previous.node;
 		}

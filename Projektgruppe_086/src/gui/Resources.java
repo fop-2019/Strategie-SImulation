@@ -25,10 +25,11 @@ public class Resources {
     private BufferedImage dices[];
     private BufferedImage check;
     private BufferedImage unit;
-    private BufferedImage arrow, arrowDeactivated, plus, plusDeactivated, swords;
+    private BufferedImage arrow, arrowDeactivated, plus, plusDeactivated, swords, revolution;
     private BufferedImage soldiers[];
     private List<String> castleNames;
     private Font celticFont;
+    private String path = System.getProperty("user.dir")+"\\res\\highscores.txt";
 
     private List<ScoreEntry> scoreEntries;
 
@@ -94,6 +95,7 @@ public class Resources {
             unit   = loadImage("unit.png");
             arrow  = loadImage("arrow.png");
             swords = loadImage("swords.png");
+            revolution = loadImage("revolution.png"); //Source: Revolution by Nociconist from the Noun Project
             plus   = loadImage("plus.png");
             plusDeactivated = loadImage("plus_deactivated.png");
             arrowDeactivated = loadImage("arrow_deactivated.png");
@@ -137,8 +139,15 @@ public class Resources {
      * @see ScoreEntry#write(PrintWriter)
      * @throws IOException Eine IOException wird geworfen, wenn Probleme beim Schreiben auftreten.
      */
-    private void saveScoreEntries() throws IOException {
-        // TODO: Resources#saveScoreEntries()
+    private void saveScoreEntries() throws IOException { //PRIVATE SETZEN
+    	PrintWriter clear = new PrintWriter(path);
+    	clear.write("");
+    	clear.close();
+        PrintWriter write = new PrintWriter(new FileOutputStream(new File(path), true));
+        for (ScoreEntry entry : scoreEntries) {
+        	entry.write(write);
+        }
+        write.close();
     }
 
     /**
@@ -150,8 +159,28 @@ public class Resources {
      * @see ScoreEntry#read(String)
      * @see #addScoreEntry(ScoreEntry)
      */
-    private void loadScoreEntries() {
-        // TODO: Resources#loadScoreEntries()
+    private void loadScoreEntries() { //PRIVATE SETZEN
+        this.scoreEntries = new ArrayList<ScoreEntry>();
+        try (FileReader fr = new FileReader(path); BufferedReader reader = new BufferedReader(fr)){
+        	String line;
+        	while ((line = reader.readLine())!=null) {
+        		scoreEntries.add(ScoreEntry.read(line));
+        	}
+        }catch (IOException e) {
+        	System.out.println("An Error occured! Read the following report: \n\n"+e.getMessage());
+        	return;
+        }
+        
+        for(int i = 1; i < scoreEntries.size(); i++) {
+            for(int j = 0; j < scoreEntries.size() - i; j++) { 
+            	if(scoreEntries.get(j).getScore() < scoreEntries.get(j+1).getScore()) {
+            		ScoreEntry tmp = scoreEntries.get(j);
+        			scoreEntries.set(j, scoreEntries.get(j+1));
+        			scoreEntries.set(j+1, tmp);
+                }
+                 
+            }
+        }
     }
 
     /**
@@ -291,6 +320,10 @@ public class Resources {
 
     public BufferedImage getSwordsIcon() {
         return this.swords;
+    }
+    
+    public BufferedImage getRevolutionIcon() {
+    	return this.revolution;
     }
 
     public BufferedImage getArrowIconDeactivated() {

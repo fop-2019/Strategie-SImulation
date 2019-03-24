@@ -1,6 +1,9 @@
 package game;
 
 import game.goals.*;
+import game.jokers.DiceJoker;
+import game.jokers.RevolutionJoker;
+import game.jokers.TroopsJoker;
 import game.players.*;
 
 import java.awt.*;
@@ -38,4 +41,12 @@ public class GameConstants {
         BasicAI.class,
         // TODO: Add more Player types, like different AIs
     };
+    
+    public static final Class<?> JOKER_TYPES[] = {
+            DiceJoker.class,
+            RevolutionJoker.class,
+            TroopsJoker.class,
+            
+        };
+    
 }

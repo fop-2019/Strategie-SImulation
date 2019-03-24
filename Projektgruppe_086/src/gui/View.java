@@ -20,7 +20,7 @@ import java.util.Vector;
  */
 public abstract class View extends Container implements ActionListener {
 
-    private GameWindow gameWindow;
+    protected GameWindow gameWindow;
     protected static final Dimension BUTTON_SIZE = new Dimension(125, 40);
 
     public View(GameWindow gameWindow) {

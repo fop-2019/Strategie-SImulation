@@ -3,6 +3,9 @@ package gui.components;
 import gui.Resources;
 
 import javax.swing.*;
+
+import game.Player;
+
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Random;
@@ -33,8 +36,21 @@ public class DicePanel extends JPanel {
         repaint();
         return result;
     }
+    
+    public int[] generateRandom(int numDices, int bonus) {
+        this.numDices = numDices;
+        int[] result = new int[Math.min(numDices, diceValues.length)];
+        
+        for (int i = 0; i < Math.min(numDices, diceValues.length); i++) {
+            diceValues[i] = random.nextInt(6-bonus) + 1+bonus;
+            result[i] = diceValues[i];
+        }
 
-    public int[] generateRandom(int numDices, boolean animate) throws InterruptedException {
+        repaint();
+        return result;
+    }
+
+    public int[] generateRandom(int numDices, boolean animate, int bonus) throws InterruptedException {
         if(animate) {
             long duration = 1500;
             long start = System.currentTimeMillis();
@@ -47,14 +63,14 @@ public class DicePanel extends JPanel {
                 long waitTime = (long) (200 * Math.pow(progress, 3) - 800 * Math.pow(progress, 2) + 850 * progress + 20);
                 if(lastTick == 0 || (waitTime > 0 && (tick - lastTick) >= waitTime)) {
                     lastTick = tick;
-                    generateRandom(numDices);
+                    generateRandom(numDices, bonus);
                 } else {
                     Thread.sleep(10);
                 }
             }
         }
 
-        return generateRandom(numDices);
+        return generateRandom(numDices, bonus);
     }
 
     @Override

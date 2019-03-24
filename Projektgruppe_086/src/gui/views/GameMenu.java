@@ -28,7 +28,7 @@ public class GameMenu extends View {
     private JComboBox mapSize;
     private JComboBox goal;
     private JComponent[][] playerConfig;
-    private JButton btnStart, btnBack;
+    private JButton btnContinue, btnBack;
 
     // map size, type?
     // goal?
@@ -79,7 +79,7 @@ public class GameMenu extends View {
         offsetY = this.getHeight() - BUTTON_SIZE.height - 25;
         offsetX = (this.getWidth() - 2*BUTTON_SIZE.width - 25) / 2;
         btnBack.setLocation(offsetX, offsetY);
-        btnStart.setLocation(offsetX + BUTTON_SIZE.width + 25, offsetY);
+        btnContinue.setLocation(offsetX + BUTTON_SIZE.width + 25, offsetY);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class GameMenu extends View {
 
         // Buttons
         btnBack = createButton("Zurück");
-        btnStart = createButton("Starten");
+        btnContinue = createButton("Weiter");
 
         getWindow().setSize(750, 450);
         getWindow().setMinimumSize(new Dimension(750, 450));
@@ -151,7 +151,7 @@ public class GameMenu extends View {
     public void actionPerformed(ActionEvent actionEvent) {
         if(actionEvent.getSource() == btnBack)
             getWindow().setView(new StartScreen(getWindow()));
-        else if(actionEvent.getSource() == btnStart) {
+        else if(actionEvent.getSource() == btnContinue) {
 
             try {
 
@@ -206,11 +206,9 @@ public class GameMenu extends View {
 
                 // Set Goal
                 Goal goal = GameConstants.GAME_GOALS[goalIndex];
-                GameView gameView = new GameView(getWindow(), game);
                 game.setMapSize(MapSize.values()[mapSize]);
                 game.setGoal(goal);
-                game.start(gameView);
-                getWindow().setView(gameView);
+                getWindow().setView(new JokerMenu (getWindow(), game));
             } catch(IllegalArgumentException ex) {
                 ex.printStackTrace();
                 showErrorMessage("Fehler beim Erstellen des Spiels: " + ex.getMessage(), "Interner Fehler");
