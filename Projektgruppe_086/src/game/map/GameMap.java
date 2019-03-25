@@ -182,17 +182,17 @@ public class GameMap {
 		int tile = 0;
 		// radius if there are less than 20 castles
 		if (castleGraph.getNodes().size() < 20) {
-			System.out.println("less than 20");
+//			System.out.println("less than 20");
 			tile = (width * scale + height * scale) / 8;
 		}
 		// radius if there are between 20 and 45 castles
 		else if (castleGraph.getNodes().size() >= 20 && castleGraph.getNodes().size() <= 45) {
-			System.out.println("between 20 and 45");
+//			System.out.println("between 20 and 45");
 			tile = (width * scale + height * scale) / 10;
 		}
 		// radius if there are more than 45 castles
 		else if (castleGraph.getNodes().size() > 45) {
-			System.out.println("more than 45");
+//			System.out.println("more than 45");
 			tile = (width * scale + height * scale) / 12;
 		}
 

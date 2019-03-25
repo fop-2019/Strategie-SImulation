@@ -78,7 +78,7 @@ public abstract class GraphAlgorithm<T> {
 		for (Node<T> node : availableNodes) {
 			if (currentLow.value == algorithmNodes.get(node).value) {
 				availableNodes.remove(node);
-				System.out.println("returned node with value: " + algorithmNodes.get(node).value);
+//				System.out.println("returned node with value: " + algorithmNodes.get(node).value);
 				return algorithmNodes.get(node);
 			}
 		}

@@ -46,7 +46,6 @@ public class Clustering {
 		h = GameMap.getMapHeight();
 		w = GameMap.getMapWidth();
 		s = GameMap.getMapScale();
-//		System.out.println(h + " " + w);
 		int closestKingdom = -1;
 		double smallestDist = (int) Math.floor(Math.sqrt((w * w * s * s) + (h * h * s * s)));
 		Point[] centers = new Point[kingdomCount];

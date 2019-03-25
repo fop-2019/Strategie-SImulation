@@ -214,7 +214,7 @@ public class GameView extends View implements GameInterface {
         updateStats();
         map.repaint();
     }
-
+    
     @Override
     public void onNextTurn(Player currentPlayer, int troopsGot, boolean human) {
         this.logLine("%PLAYER% ist am Zug.", currentPlayer);
