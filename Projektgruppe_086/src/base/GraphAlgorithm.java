@@ -59,6 +59,7 @@ public abstract class GraphAlgorithm<T> {
 		this.algorithmNodes.get(sourceNode).value = 0;
 	}
 
+	
 	private AlgorithmNode<T> getSmallestNode() {
 		if (availableNodes.size() == 0 || availableNodes == null)
 			return null;
@@ -69,34 +70,25 @@ public abstract class GraphAlgorithm<T> {
 		while (availableNodesIterator.hasNext()) {
 			Node<T> node = availableNodesIterator.next();
 			if (currentLow == null) {
-				if (algorithmNodes.get(node).value >=0)currentLow = algorithmNodes.get(node);
+				if (algorithmNodes.get(node).value >=0 && isPassable(node))currentLow = algorithmNodes.get(node);
 			} else {
-				if (currentLow.value >= algorithmNodes.get(node).value
-						&& algorithmNodes.get(node).value >= 0 && currentLow.value>=0) {
+				if (currentLow.value > algorithmNodes.get(node).value
+						&& algorithmNodes.get(node).value >= 0 && currentLow.value>=0 && isPassable(node)) {
 					currentLow = algorithmNodes.get(node);
 				}
 			}
 		}
-		
 
-		Iterator<Node<T>> availableNodesIterator2 = availableNodes.iterator();
-		
-		while (availableNodesIterator2.hasNext()) {
-			Node<T> node = availableNodesIterator.next();
-			if (currentLow.value == algorithmNodes.get(node).value) {
-				availableNodes.remove(node);
-				System.out.println("returned node with value: " + algorithmNodes.get(node).value);
-				return algorithmNodes.get(node);
-			}
-		}
-		
-		availableNodes.remove(currentLow.node);
+		if (currentLow != null) availableNodes.remove(currentLow.node);
 		return currentLow;
 	}
-
+	
+	
+	
 	public void run() {
 		while (availableNodes.size() != 0) {
 			AlgorithmNode<T> smallest = this.getSmallestNode();
+			if (smallest == null) break;
 			List<Node<T>> neighbors = new LinkedList<Node<T>>();
 			for (Node<T> n : graph.getNodes()) {
 				if (graph.getEdge(n, smallest.node) != null)
@@ -112,9 +104,10 @@ public abstract class GraphAlgorithm<T> {
 		}
 	}
 
+	
 	public List<Edge<T>> getPath(Node<T> destination) {
 		List<Edge<T>> path = new LinkedList<Edge<T>>();
-
+		
 		Node<T> p = destination;
 		while (algorithmNodes.get(p).previous!=null) {
 			if (graph.getEdge(p, algorithmNodes.get(p).previous.node) == null) return null;
