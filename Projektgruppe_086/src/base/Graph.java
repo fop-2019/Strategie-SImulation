@@ -3,13 +3,10 @@ package base;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import game.map.Castle;
 
 /**
@@ -125,7 +122,8 @@ public class Graph<T> {
      * @param c node 
      * @return list of nodes
      */
-    public ArrayList<Node> findConnectedCastles (Node<T> c) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public ArrayList<Node> findConnectedCastles (Node<T> c) {
     	boolean inMain = false;
 		Node <T> currentCastle = c;
 		ArrayList<Node> visitedCastle = new ArrayList<Node>();		
@@ -185,7 +183,8 @@ public class Graph<T> {
          * Überprüft, ob alle Knoten in dem Graphen erreichbar sind.
          * @return true, wenn alle Knoten erreichbar sind
          */
-        public boolean allNodesConnected() {	
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+		public boolean allNodesConnected() {	
  
         	if(findConnectedCastles(nodes.get(0)).size() == nodes.size()) {
         		return true;

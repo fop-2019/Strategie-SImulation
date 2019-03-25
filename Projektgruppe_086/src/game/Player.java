@@ -14,6 +14,7 @@ public abstract class Player {
     private Color color;
     private int points;
     private int remainingTroops;
+    private Joker joker;
 
     protected Player(String name, Color color) {
         this.name = name;
@@ -85,4 +86,14 @@ public abstract class Player {
         this.remainingTroops = 0;
         this.points = 0;
     }
+    
+    public void setJoker(Joker joker) {
+    	this.joker = joker;
+    }
+    
+    public Joker getJoker() {
+    	return joker;
+    }
+
+	public abstract boolean useJoker(Joker joker2);
 }

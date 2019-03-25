@@ -9,13 +9,11 @@ import gui.components.NumberChooser;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.font.TextAttribute;
 import java.util.*;
 
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class GameMenu extends View {
 
     private JLabel lblTitle;
@@ -25,10 +23,12 @@ public class GameMenu extends View {
     private JTextArea lblGoalDescription;
 
     private NumberChooser playerCount;
-    private JComboBox mapSize;
-    private JComboBox goal;
+    @SuppressWarnings("rawtypes")
+	private JComboBox mapSize;
+    @SuppressWarnings("rawtypes")
+	private JComboBox goal;
     private JComponent[][] playerConfig;
-    private JButton btnStart, btnBack;
+    private JButton btnContinue, btnBack;
 
     // map size, type?
     // goal?
@@ -79,7 +79,7 @@ public class GameMenu extends View {
         offsetY = this.getHeight() - BUTTON_SIZE.height - 25;
         offsetX = (this.getWidth() - 2*BUTTON_SIZE.width - 25) / 2;
         btnBack.setLocation(offsetX, offsetY);
-        btnStart.setLocation(offsetX + BUTTON_SIZE.width + 25, offsetY);
+        btnContinue.setLocation(offsetX + BUTTON_SIZE.width + 25, offsetY);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class GameMenu extends View {
 
         // Buttons
         btnBack = createButton("Zurück");
-        btnStart = createButton("Starten");
+        btnContinue = createButton("Weiter");
 
         getWindow().setSize(750, 450);
         getWindow().setMinimumSize(new Dimension(750, 450));
@@ -151,7 +151,7 @@ public class GameMenu extends View {
     public void actionPerformed(ActionEvent actionEvent) {
         if(actionEvent.getSource() == btnBack)
             getWindow().setView(new StartScreen(getWindow()));
-        else if(actionEvent.getSource() == btnStart) {
+        else if(actionEvent.getSource() == btnContinue) {
 
             try {
 
@@ -188,7 +188,8 @@ public class GameMenu extends View {
                     }
 
                     Color color = ((ColorChooserButton) playerConfig[i][1]).getSelectedColor();
-                    int playerType = ((JComboBox) playerConfig[i][3]).getSelectedIndex();
+                    @SuppressWarnings("rawtypes")
+					int playerType = ((JComboBox) playerConfig[i][3]).getSelectedIndex();
 
                     if (playerType < 0 || playerType >= GameConstants.PLAYER_TYPES.length) {
                         showErrorMessage(String.format("Bitte geben Sie einen gültigen Spielertyp für Spieler %d an.", i + 1), "Ungültige Eingaben");
@@ -206,11 +207,9 @@ public class GameMenu extends View {
 
                 // Set Goal
                 Goal goal = GameConstants.GAME_GOALS[goalIndex];
-                GameView gameView = new GameView(getWindow(), game);
                 game.setMapSize(MapSize.values()[mapSize]);
                 game.setGoal(goal);
-                game.start(gameView);
-                getWindow().setView(gameView);
+                getWindow().setView(new JokerMenu (getWindow(), game));
             } catch(IllegalArgumentException ex) {
                 ex.printStackTrace();
                 showErrorMessage("Fehler beim Erstellen des Spiels: " + ex.getMessage(), "Interner Fehler");

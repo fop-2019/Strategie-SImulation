@@ -64,8 +64,10 @@ public abstract class GraphAlgorithm<T> {
 			return null;
 
 		AlgorithmNode<T> currentLow = null;
-
-		for (Node<T> node : availableNodes) {
+		Iterator<Node<T>> availableNodesIterator = availableNodes.iterator();
+		
+		while (availableNodesIterator.hasNext()) {
+			Node<T> node = availableNodesIterator.next();
 			if (currentLow == null) {
 				if (algorithmNodes.get(node).value >=0)currentLow = algorithmNodes.get(node);
 			} else {
@@ -75,7 +77,12 @@ public abstract class GraphAlgorithm<T> {
 				}
 			}
 		}
-		for (Node<T> node : availableNodes) {
+		
+
+		Iterator<Node<T>> availableNodesIterator2 = availableNodes.iterator();
+		
+		while (availableNodesIterator2.hasNext()) {
+			Node<T> node = availableNodesIterator.next();
 			if (currentLow.value == algorithmNodes.get(node).value) {
 				availableNodes.remove(node);
 //				System.out.println("returned node with value: " + algorithmNodes.get(node).value);
@@ -110,8 +117,8 @@ public abstract class GraphAlgorithm<T> {
 
 		Node<T> p = destination;
 		while (algorithmNodes.get(p).previous!=null) {
-			if (graph.getEdge(p, algorithmNodes.get(p).previous.node) == null) break;
-			if (!this.isPassable(graph.getEdge(p, algorithmNodes.get(p).previous.node))) break;
+			if (graph.getEdge(p, algorithmNodes.get(p).previous.node) == null) return null;
+			if (!this.isPassable(graph.getEdge(p, algorithmNodes.get(p).previous.node)) || !this.isPassable(algorithmNodes.get(p).previous.node)) return null;
 			path.add(graph.getEdge(p, algorithmNodes.get(p).previous.node));
 			p = algorithmNodes.get(p).previous.node;
 		}

@@ -14,6 +14,7 @@ import game.AI;
 import game.Game;
 import game.map.PathFinding;
 import game.Player;
+import game.jokers.RevolutionJoker;
 import game.map.Castle;
 import game.map.GameMap;
 import game.players.Human;
@@ -21,6 +22,7 @@ import gui.Resources;
 import gui.View;
 import gui.views.GameView;
 
+@SuppressWarnings("serial")
 public class MapPanel extends JScrollPane {
 
     public enum Action {
@@ -185,6 +187,14 @@ public class MapPanel extends JScrollPane {
                         } else {
                             selectNew = true;
                         }
+                    } else if (selectedCastle.getOwner() != currentPlayer && game.getRound() > 1 && currentPlayer.getJoker().isUsable() && currentPlayer.getJoker().getClass()==RevolutionJoker.class) {
+                    	Rectangle iconRev = getBoundsIconRevolution(castlePos);
+                        if (iconRev.contains(mousePos)) {
+//                            game.chooseCastle(selectedCastle, currentPlayer);
+                        	game.useRevolution(selectedCastle, currentPlayer);
+                            gameView.updateStats();
+                            setCursor(Cursor.getDefaultCursor());
+                        }
                     }
 
                     if(currentAction != Action.NONE) {
@@ -259,6 +269,13 @@ public class MapPanel extends JScrollPane {
                             return;
                         }
                     }
+                } else if (selectedCastle.getOwner() != game.getCurrentPlayer() && game.getRound() > 1  && game.getCurrentPlayer().getJoker().isUsable() && game.getCurrentPlayer().getJoker().getClass()==RevolutionJoker.class) {
+                	Rectangle iconRev = getBoundsIconRevolution(castlePos);
+                    if (iconRev.contains(mousePos)) {
+                        setToolTipText("Hier eine Revolution starten");
+                        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                        return;
+                    }
                 }
 
                 if(currentAction == Action.MOVING || currentAction == Action.ATTACKING) {
@@ -308,6 +325,13 @@ public class MapPanel extends JScrollPane {
     }
 
     private Rectangle getBoundsIconCheck(Point castlePos) {
+        int x = (CASTLE_SIZE + 10 - ICON_SIZE) / 2 + castlePos.x - 5;
+        int y = (castlePos.y - 5 - ICON_SIZE);
+
+        return new Rectangle(x, y, ICON_SIZE, ICON_SIZE);
+    }
+    
+    private Rectangle getBoundsIconRevolution(Point castlePos) {
         int x = (CASTLE_SIZE + 10 - ICON_SIZE) / 2 + castlePos.x - 5;
         int y = (castlePos.y - 5 - ICON_SIZE);
 
@@ -449,7 +473,7 @@ public class MapPanel extends JScrollPane {
                     Point location = translate(selectedCastle.getLocationOnMap());
                     g.setColor(selectedCastle.getOwner() == null ? Color.WHITE : selectedCastle.getOwner().getColor());
                     g.drawRect(location.x - 5, location.y - 5, CASTLE_SIZE + 10, CASTLE_SIZE + 10);
-
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
                     if(canPerformAction()) {
                         if (canChooseCastle()) {
                             BufferedImage icon = resources.getCheckIcon();
@@ -470,6 +494,10 @@ public class MapPanel extends JScrollPane {
                             BufferedImage icons[] = {plusIcon, arrowIcon, swordsIcon};
                             for (int i = 0; i < icons.length; i++)
                                 g.drawImage(icons[i], iconsX + (ICON_SIZE + 2) * i, iconsY, ICON_SIZE, ICON_SIZE, null);
+                        } else if (selectedCastle.getOwner() != game.getCurrentPlayer() && game.getRound() > 1  && game.getCurrentPlayer().getJoker().getClass()==RevolutionJoker.class && game.getCurrentPlayer().getJoker().isUsable()) {
+                        	BufferedImage revIcon = resources.getRevolutionIcon();
+                        	Rectangle bounds = getBoundsIconRevolution(location);
+                        	g.drawImage(revIcon, bounds.x, bounds.y, ICON_SIZE, ICON_SIZE, null);
                         }
                     }
                 }

@@ -50,9 +50,9 @@ public class GameMap {
 	 */
 	private GameMap(int width, int height, int scale) {
 		this.castleGraph = new Graph<>();
-		this.width = width;
-		this.height = height;
-		this.scale = scale;
+		GameMap.width = width;
+		GameMap.height = height;
+		GameMap.scale = scale;
 	}
 
 	/**
@@ -322,7 +322,7 @@ public class GameMap {
 			throw new IllegalArgumentException();
 
 		System.out.println(String.format("Generating new map, castles=%d, width=%d, height=%d, kingdoms=%d",
-				castleCount, width, height, kingdomCount));
+				castleCount, width*scale, height*scale, kingdomCount));
 		GameMap gameMap = new GameMap(width, height, scale);
 		gameMap.generateBackground();
 		gameMap.generateCastles(castleCount);

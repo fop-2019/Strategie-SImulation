@@ -14,12 +14,14 @@ import game.AI;
 import game.Game;
 import game.GameInterface;
 import game.Player;
+import game.jokers.DiceJoker;
 import game.map.Castle;
 import gui.GameWindow;
 import gui.View;
 import gui.components.DicePanel;
 import gui.components.MapPanel;
 
+@SuppressWarnings("serial")
 public class GameView extends View implements GameInterface {
 
     private MapPanel map;
@@ -183,7 +185,7 @@ public class GameView extends View implements GameInterface {
         gameLog.setCaretPosition(gameLog.getDocument().getLength());
     }
 
-    private void logLine(String line, Player... playerFormat) {
+    public void logLine(String line, Player... playerFormat) {
 
         StyledDocument doc = this.gameLog.getStyledDocument();
         Style style = this.gameLog.getStyle("PlayerColor");
@@ -287,7 +289,17 @@ public class GameView extends View implements GameInterface {
     @Override
     public int[] onRoll(Player player, int dices, boolean fastForward) {
         try {
-            int[] roll = this.dices.generateRandom(dices, !fastForward);
+        	int bonus = 0;
+        	if (player.getJoker().getClass() == DiceJoker.class && player.getJoker().isUsable()) {
+        		if (player.useJoker(player.getJoker())) {
+        			player.getJoker().use();
+            		bonus = 3;
+            		this.logLine("%PLAYER% hat den DiceJoker benutzt", player);
+        		}
+        		
+        	} 
+        	
+            int[] roll = this.dices.generateRandom(dices, !fastForward, bonus);
             StringBuilder rolls = new StringBuilder();
             rolls.append("%PLAYER% würfelt: ");
             for(int i = 0; i < roll.length; i++) {

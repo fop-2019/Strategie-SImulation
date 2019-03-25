@@ -5,9 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import game.Game;
-import gui.views.GameMenu;
-
 import java.awt.*;
 
 /**
@@ -15,7 +12,6 @@ import java.awt.*;
  */
 public class Clustering {
 
-	private Random random;
 	private final List<Castle> allCastles;
 	private final int kingdomCount;
 
@@ -29,7 +25,7 @@ public class Clustering {
 		if (kingdomCount < 2)
 			throw new IllegalArgumentException("Ungültige Anzahl an Königreichen");
 
-		this.random = new Random();
+		new Random();
 		this.kingdomCount = kingdomCount;
 		this.allCastles = Collections.unmodifiableList(castles);
 	}

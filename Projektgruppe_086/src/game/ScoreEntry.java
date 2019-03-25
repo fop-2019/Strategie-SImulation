@@ -53,8 +53,11 @@ public class ScoreEntry implements Comparable<ScoreEntry> {
      * @param printWriter der PrintWriter, mit dem der Eintrag geschrieben wird
      */
     public void write(PrintWriter printWriter) {
-        // TODO: ScoreEntry#write(PrintWriter)
-    }
+        StringBuilder sb = new StringBuilder();
+          
+        sb.append(this.name).append(";").append(this.date.getTime()).append(";").append(this.score).append(";").append(this.gameType).append("\n");
+        printWriter.write(sb.toString());
+  }
 
     /**
      * List eine gegebene Zeile ein und wandelt dies in ein ScoreEntry-Objekt um.
@@ -73,8 +76,22 @@ public class ScoreEntry implements Comparable<ScoreEntry> {
      * @return Ein ScoreEntry-Objekt oder null
      */
     public static ScoreEntry read(String line) {
-        // TODO: ScoreEntry#read(String)
-        return null;
+        String[] data = line.split(";");
+        
+        if (data.length != 4) {
+        	return null;
+        }
+        try {
+        	String name = data[0];
+        	Date date = new Date (Long.parseLong(data[1]));
+        	int score = Integer.parseInt(data[2]);
+        	String mode = data[3];
+        	
+        	return new ScoreEntry(name, score, date, mode);
+        } catch (NumberFormatException e) {
+        	System.out.println("At least one line contains invalid entries");
+        	return null;
+        }
     }
 
     public Date getDate() {
