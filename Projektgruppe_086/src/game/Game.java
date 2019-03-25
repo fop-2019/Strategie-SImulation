@@ -153,6 +153,7 @@ public class Game {
             return;
 
         source.moveTroops(destination, troopCount);
+//        System.out.println("Moved troops from " + source.getName() + " to " + destination.getName() + " (" + troopCount + ")");
         gameInterface.onUpdate();
     }
 
