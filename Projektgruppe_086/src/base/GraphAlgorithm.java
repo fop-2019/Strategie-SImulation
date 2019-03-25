@@ -59,7 +59,10 @@ public abstract class GraphAlgorithm<T> {
 		this.algorithmNodes.get(sourceNode).value = 0;
 	}
 
-	
+	/**
+	 * returns the node with the smallest value of availableNodes and removes it from availableNodes
+	 * @return the node with the smallest value of availableNodes
+	 */
 	private AlgorithmNode<T> getSmallestNode() {
 		if (availableNodes.size() == 0 || availableNodes == null)
 			return null;
@@ -84,7 +87,9 @@ public abstract class GraphAlgorithm<T> {
 	}
 	
 	
-	
+	/**
+	 * calculates the value for every node in availableNodes using the smallest node
+	 */
 	public void run() {
 		while (availableNodes.size() != 0) {
 			AlgorithmNode<T> smallest = this.getSmallestNode();
@@ -104,7 +109,11 @@ public abstract class GraphAlgorithm<T> {
 		}
 	}
 
-	
+	/**
+	 * generates the shortest possible path
+	 * @param destination of the path
+	 * @return path as list. null, if no path is found
+	 */
 	public List<Edge<T>> getPath(Node<T> destination) {
 		List<Edge<T>> path = new LinkedList<Edge<T>>();
 		
@@ -115,7 +124,21 @@ public abstract class GraphAlgorithm<T> {
 			path.add(graph.getEdge(p, algorithmNodes.get(p).previous.node));
 			p = algorithmNodes.get(p).previous.node;
 		}
-		return path;
+		List<Node<T>> nPath = new LinkedList<>();
+		
+		for (Edge<T> edge : path) {
+			nPath.add(edge.getNodeA());
+			nPath.add(edge.getNodeB());
+		}
+		
+		for (Node<T> node: algorithmNodes.keySet()) {
+			if (algorithmNodes.get(node).value == 0) {
+				if (nPath.contains(node) && nPath.contains(destination)) {
+					return path;
+				}
+			}
+		}
+		return null;
 	}
 
 	/**

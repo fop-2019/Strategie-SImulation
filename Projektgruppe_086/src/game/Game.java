@@ -267,13 +267,12 @@ public class Game {
             }
         }
         
-        if (currentPlayer.getJoker().getClass() == TroopsJoker.class && allCastlesChosen() && currentPlayer.getJoker().isUsable()) {
+        if (currentPlayer.getJoker().getClass() == TroopsJoker.class && round>1 && currentPlayer.getJoker().isUsable()) {
         	if (currentPlayer.useJoker(currentPlayer.getJoker())) {
         		currentPlayer.getJoker().use();
         		addTroops+=Math.round(-0.0292*Math.pow((gameMap.getWidth()/120), 2)+1.1591*(gameMap.getWidth()/120)-2.0649);
         		((GameView) gameInterface).logLine("%PLAYER% hat den TroopsJoker benutzt und "+ Math.round(-0.0292*Math.pow((gameMap.getWidth()/120), 2)+1.1591*(gameMap.getWidth()/120)-2.0649) +" Truppen zusätzlich bekommen.", currentPlayer);
         		
-        		System.out.println(this.gameMap.getCastles().size());
         	}
         }
         
@@ -283,14 +282,7 @@ public class Game {
         if(isAI) {
         	if (currentPlayer.getJoker().getClass() == RevolutionJoker.class && currentPlayer.getJoker().isUsable() && this.round>1) {
         		if (currentPlayer.useJoker(currentPlayer.getJoker())) {
-        			LinkedList<Player> poss = new LinkedList<>();
-        			for (Player opp:this.getPlayers()) {
-        				if(opp != this.getCurrentPlayer()) {
-        					poss.add(opp);
-        				}
-        			}
-        			List<Castle> castles =poss.get((int)Math.random()*poss.size()).getCastles(this);
-        			this.useRevolution(castles.get((int)Math.random()*castles.size()), currentPlayer);
+        			((AI) currentPlayer).useRevolution(this, gameInterface);
         		}
         	}
             ((AI)currentPlayer).doNextTurn(this);
@@ -315,14 +307,10 @@ public class Game {
         return this.isOver;
     }
 
-	public void useRevolution(Castle selectedCastle, Player user) {
-		user.getJoker().use();
-		Player opp = selectedCastle.getOwner();
-		opp.addTroops(selectedCastle.getTroopCount()-1);
-		selectedCastle.removeTroops(selectedCastle.getTroopCount());
-		selectedCastle.setOwner(user);
-		selectedCastle.addTroops(1);
-		((GameView) gameInterface).logLine("%PLAYER% hat den RevolutionJoker benutzt und hat die Herrschaft über "+ selectedCastle.getName() +" erhalten.", currentPlayer);
-		
-	}
+    /**
+     * executes the benefits of the RevolutionJoker
+     * @param selectedCastle castle selected by player
+     * @param user user of the joker
+     */
+	
 }

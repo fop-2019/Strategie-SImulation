@@ -20,6 +20,14 @@ public abstract class AI extends Player {
     
 
     protected abstract void actions(Game game) throws InterruptedException;
+    
+    /**
+     * chooses the joker for the game
+     * @return chosen joker
+     */
+    public abstract Joker chooseJoker();
+    
+    public abstract void useRevolution(Game game, GameInterface gameInterface);
 
     public void doNextTurn(Game game) {
         if(aiThread != null)

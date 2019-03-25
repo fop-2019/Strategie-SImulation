@@ -2,6 +2,7 @@ package gui.views;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JButton;
@@ -9,11 +10,12 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+
+import game.AI;
 import game.Game;
 import game.GameConstants;
 import game.Joker;
 import game.Player;
-import game.jokers.TroopsJoker;
 import game.players.Human;
 import gui.GameWindow;
 import gui.View;
@@ -26,17 +28,18 @@ public class JokerMenu extends View{
     private JButton btnStart, btnBack, btnInfo;
     private Game game;
     private List<Player> players;
-    private Joker aiJoker;
+    private HashMap<Integer, Joker> aiJokers;
     
 
     public JokerMenu(GameWindow gameWindow, Game game) {
         super(gameWindow);
         this.game = game;
         players = game.getPlayers();
-        this.aiJoker = new TroopsJoker();
+        aiJokers = new HashMap<>();
         onInit();
     }
 
+    @Override
 	public void onResize() {
 
         int offsetY = 25;
@@ -100,7 +103,8 @@ public class JokerMenu extends View{
             		if (players.get(i).getClass() == Human.class) {
             			jokerChoice = new JComboBox<>(jokerTypes);
             		} else {
-            			jokerChoice = createLabel(aiJoker.toString(), 16);
+            			aiJokers.put(i, ((AI) players.get(i)).chooseJoker());
+            			jokerChoice = createLabel(aiJokers.get(i).toString(), 16);
             		}
             	}
         	} catch (IndexOutOfBoundsException e) {
@@ -143,8 +147,6 @@ public class JokerMenu extends View{
             		try {
             			if (jokerConfig[i][2].getClass() == JComboBox.class && players.get(i)!=null) {
                 			players.get(i).setJoker(Joker.getInstance(GameConstants.JOKER_TYPES[((JComboBox<String>) jokerConfig[i][2]).getSelectedIndex()]));
-                		} else if (players.get(i)!=null) {
-                			players.get(i).setJoker(aiJoker);
                 		}
             		} catch (IndexOutOfBoundsException e) {
             			

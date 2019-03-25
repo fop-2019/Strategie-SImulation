@@ -4,8 +4,8 @@ import game.Joker;
 
 public class TroopsJoker extends Joker{
 	
-	public int bonus;
 
+	protected boolean used = false;
 	public TroopsJoker() {
 		super();
 	}
@@ -18,11 +18,6 @@ public class TroopsJoker extends Joker{
 	@Override
 	public boolean isUsable() {
 		return !used;
-	}
-
-	@Override
-	public void show() {
-		
 	}
 
 	@Override

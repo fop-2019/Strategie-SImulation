@@ -5,12 +5,16 @@ import game.jokers.RevolutionJoker;
 import game.jokers.TroopsJoker;
 
 public abstract class Joker {
-	protected boolean used = false;
 	
 	public Joker() {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * returns a new instance of the wanted joker
+	 * @param jokerClass class of the requested joker
+	 * @return a new instance of the wanted joker
+	 */ 
 	public static Joker getInstance (Class<?> jokerClass) {
 		if (jokerClass == DiceJoker.class) {
 			return new DiceJoker();
@@ -23,12 +27,20 @@ public abstract class Joker {
 		}
 	}
 	
+	/**
+	 * returns the name of the joker
+	 */
 	public abstract String toString();
 	
+	/**
+	 * sets the attribute used to true
+	 */
 	public abstract void use();
 	
+	/**
+	 * returns usability of the joker 
+	 * @return usability of the joker 
+	 */
 	public abstract boolean isUsable();
-	
-	public abstract void show();
 	
 }

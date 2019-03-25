@@ -2,6 +2,7 @@ package game.players;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,9 +11,15 @@ import base.Graph;
 import base.Node;
 import game.AI;
 import game.Game;
+import game.GameInterface;
 import game.Joker;
+import game.Player;
+import game.jokers.DiceJoker;
+import game.jokers.RevolutionJoker;
+import game.jokers.TroopsJoker;
 import game.map.Castle;
 import gui.AttackThread;
+import gui.views.GameView;
 
 public class BasicAI extends AI {
 
@@ -104,8 +111,45 @@ public class BasicAI extends AI {
 
 	@Override
 	public boolean useJoker(Joker type) {
-		return Math.random()<0.5;
+		System.out.println("joker used");
+		return Math.random()<1;
 		
 	}
+
+	@Override
+	public Joker chooseJoker() {
+		
+		int rnd = (int) Math.round(Math.random()*2)+1;
+		
+		switch (rnd) {
+		case 1: System.out.println("I use DiceJoker");this.setJoker(new DiceJoker()); return this.getJoker(); 
+		case 2: System.out.println("I use TroopsJoker");this.setJoker(new TroopsJoker()); return this.getJoker(); 
+		case 3: System.out.println("I use RevolutionJoker");this.setJoker(new RevolutionJoker()); return this.getJoker(); 
+		}
+		
+		return null;
+	}
+
+	@Override
+	public void useRevolution(Game game, GameInterface gameInterface) {
+		List<Castle> castles = new LinkedList<>();
+		for (Player opp:game.getPlayers()) {
+			if(opp != game.getCurrentPlayer()) {
+				castles.addAll(opp.getCastles(game));
+			}
+		}
+		Castle selectedCastle = castles.get((int) Math.round(Math.random()*castles.size()));
+		((GameView) gameInterface).logLine("%PLAYER% hat den RevolutionJoker benutzt und hat die Herrschaft über "+ selectedCastle.getName() +" erhalten.", game.getCurrentPlayer());
+		System.out.println(game.getCurrentPlayer().getName() + " revolution at "+selectedCastle.getName());
+		game.getCurrentPlayer().getJoker().use();
+		Player opp = selectedCastle.getOwner();
+		opp.addTroops(selectedCastle.getTroopCount()-1);
+		selectedCastle.removeTroops(selectedCastle.getTroopCount());
+		selectedCastle.setOwner(game.getCurrentPlayer());
+		selectedCastle.addTroops(1);
+			
+	}
+		
+	
 
 }

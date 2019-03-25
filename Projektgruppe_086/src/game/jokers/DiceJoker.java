@@ -4,6 +4,8 @@ import game.Joker;
 
 public class DiceJoker extends Joker{
 
+
+	protected boolean used = false;
 	public DiceJoker() {
 		super();
 	}
@@ -16,11 +18,6 @@ public class DiceJoker extends Joker{
 	@Override
 	public boolean isUsable() {
 		return !this.used;
-	}
-
-	@Override
-	public void show() {
-		
 	}
 
 	@Override

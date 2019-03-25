@@ -95,5 +95,10 @@ public abstract class Player {
     	return joker;
     }
 
+    /**
+     * determin if the joker is being used
+     * @param joker2 the joker to be used
+     * @return true if player wants to use the joker
+     */
 	public abstract boolean useJoker(Joker joker2);
 }

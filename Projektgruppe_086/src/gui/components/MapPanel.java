@@ -191,7 +191,12 @@ public class MapPanel extends JScrollPane {
                     	Rectangle iconRev = getBoundsIconRevolution(castlePos);
                         if (iconRev.contains(mousePos)) {
 //                            game.chooseCastle(selectedCastle, currentPlayer);
-                        	game.useRevolution(selectedCastle, currentPlayer);
+                        	game.getCurrentPlayer().getJoker().use();
+                    		Player opp = selectedCastle.getOwner();
+                    		opp.addTroops(selectedCastle.getTroopCount()-1);
+                    		selectedCastle.removeTroops(selectedCastle.getTroopCount());
+                    		selectedCastle.setOwner(game.getCurrentPlayer());
+                    		selectedCastle.addTroops(1);
                             gameView.updateStats();
                             setCursor(Cursor.getDefaultCursor());
                         }
