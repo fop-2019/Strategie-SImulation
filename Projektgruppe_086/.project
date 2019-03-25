@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>Projektgruppe_086</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>res/castle7.png</name>
+			<type>1</type>
+			<location>/Users/Verige/eclipse-workspace/Projektgruppe_086/res/castle7.png</location>
+		</link>
+		<link>
+			<name>res/castle8.png</name>
+			<type>1</type>
+			<location>/Users/Verige/eclipse-workspace/Projektgruppe_086/res/castle8.png</location>
+		</link>
+	</linkedResources>
+</projectDescription>
