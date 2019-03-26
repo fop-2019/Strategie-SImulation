@@ -2,6 +2,7 @@ package gui.views;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -17,6 +18,7 @@ import game.GameConstants;
 import game.Joker;
 import game.Player;
 import game.players.Human;
+import game.players.Vodka;
 import gui.GameWindow;
 import gui.View;
 
@@ -97,7 +99,7 @@ public class JokerMenu extends View{
         jokerConfig = new JComponent[GameConstants.MAX_PLAYERS][];
         for(int i = 0; i < GameConstants.MAX_PLAYERS; i++) {
         	
-        	JComponent jokerChoice = createLabel("None", 16);
+        	JComponent jokerChoice = null;
         	try {
         		if (players.get(i) != null) {
             		if (players.get(i).getClass() == Human.class) {
@@ -108,19 +110,38 @@ public class JokerMenu extends View{
             		}
             	}
         	} catch (IndexOutOfBoundsException e) {
+        		jokerChoice = createLabel("empty", 16);
+        	}
+        	
+        	ArrayList<String> pTypes = new ArrayList<String>();
+        	for (Player p : game.getPlayers()) {
+        		if (p.getClass().equals(Vodka.class)) {
+                    pTypes.add("V.O.D.K.A");
+                }
+                else {
+                	pTypes.add(p.getClass().getSimpleName());
+                }
         		
         	}
         	
+        	if (pTypes.size() < GameConstants.MAX_PLAYERS) {
+        		for (int j = pTypes.size(); j < GameConstants.MAX_PLAYERS; j++) {
+        			pTypes.add("empty");
+        		}
+        	}
         	
             jokerConfig[i] = new JComponent[] {
                 createLabel(String.format("%d.", i + 1),16),
                 createLabel(playerNames[i], 16),
-                jokerChoice
+                jokerChoice,
+                createLabel(pTypes.get(i), 16)
             };
 
-            jokerConfig[i][1].setSize(200, 25);
-            jokerConfig[i][2].setSize(100, 25);
+
             jokerConfig[i][0].setSize(25, 25);
+            jokerConfig[i][1].setSize(150, 25);
+            jokerConfig[i][2].setSize(150, 25);
+            jokerConfig[i][3].setSize(100, 25);
 
             for(JComponent c : jokerConfig[i])
                 add(c);

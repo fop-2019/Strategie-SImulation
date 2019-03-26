@@ -18,7 +18,9 @@ import game.jokers.DiceJoker;
 import game.jokers.RevolutionJoker;
 import game.jokers.TroopsJoker;
 import game.map.Castle;
+import game.map.PathFinding;
 import gui.AttackThread;
+import gui.components.MapPanel;
 import gui.views.GameView;
 
 public class BasicAI extends AI {
@@ -37,6 +39,38 @@ public class BasicAI extends AI {
 
         return fewestTroops;
     }
+    
+	/**
+	 * checks if two castles are connected
+	 * 
+	 * @param castleA
+	 * @param castleB
+	 * @param game    current game
+	 * @return true if connected, false if not
+	 */
+	private boolean areConnected(Castle castleA, Castle castleB, Game game) {
+		PathFinding pF = new PathFinding(game.getMap().getGraph(), castleA, MapPanel.Action.MOVING,
+				game.getCurrentPlayer());
+		pF.run();
+		if (pF.getPath(castleB) == null)
+			return false;
+		else {
+			return true;
+		}
+	}
+
+	/**
+	 * gets all the Castles of given list that are connected to myCastle
+	 * 
+	 * @param myCastle
+	 * @param castles  list of castles
+	 * @param game     current game
+	 * @return castles filtered by connection to myCastle
+	 */
+	private List<Castle> getConnectedCastles(Castle myCastle, List<Castle> castles, Game game) {
+		return castles.stream().filter(c -> areConnected(c, myCastle, game))
+				.collect((Collectors.toCollection(ArrayList::new)));
+	}
 
     @Override
     protected void actions(Game game) throws InterruptedException {
@@ -76,7 +110,7 @@ public class BasicAI extends AI {
             do {
                 // 2. Move troops from inside to border
                 for (Castle castle : this.getCastles(game)) {
-                    if (!castleNearEnemy.contains(castle) && castle.getTroopCount() > 1) {
+                    if (!castleNearEnemy.contains(castle) && castle.getTroopCount() > 1 && !getConnectedCastles(castle, castleNearEnemy, game).isEmpty()) {
                         Castle fewestTroops = getCastleWithFewestTroops(castleNearEnemy);
                         game.moveTroops(castle, fewestTroops, castle.getTroopCount() - 1);
                     }

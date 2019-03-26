@@ -7,10 +7,10 @@ import game.Goal;
 import game.Player;
 import game.map.Castle;
 
-public class SuddenDeath extends Goal {
+public class Suddendeath extends Goal {
 
-    public SuddenDeath() {
-        super("SuddenDeath", "Jedem Spieler wird eine Hauptburg zugewiesen. Wenn diese erobert wird, ist das Spiel vorbei!");
+    public Suddendeath() {
+        super("Suddendeath", "Jedem Spieler wird eine Hauptburg zugewiesen. Wenn diese erobert wird, ist das Spiel vorbei!");
         this.gameModeID = 2;
     }
 

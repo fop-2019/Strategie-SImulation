@@ -29,8 +29,17 @@ public class Dominance extends Goal {
             if(p.flagRounds >= 7)
                 return p;
         }
+        Player p = null;
+        for(Castle c : game.getMap().getCastles()) {
+            if(c.getOwner() == null)
+                return null;
+            else if(p == null)
+                p = c.getOwner();
+            else if(p != c.getOwner())
+                return null;
+        }
 
-        return null;
+        return p;
     }
 
     @Override

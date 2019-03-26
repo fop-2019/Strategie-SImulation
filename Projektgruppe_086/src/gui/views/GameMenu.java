@@ -2,6 +2,7 @@ package gui.views;
 
 import game.*;
 import game.map.MapSize;
+import game.players.Vodka;
 import gui.GameWindow;
 import gui.View;
 import gui.components.ColorChooserButton;
@@ -94,13 +95,62 @@ public class GameMenu extends View {
         playerCount.setSize(125, 25);
         playerCount.addValueListener((oldValue, newValue) -> onResize());
         add(playerCount);
+        
+     // Goals
+        Vector<String> goalNames = new Vector<>();
+        for(Goal goal : GameConstants.GAME_GOALS)
+            goalNames.add(goal.getName());
+
+        lblGoal = createLabel("Mission", 16);
+        lblGoalDescription = createTextArea(GameConstants.GAME_GOALS[0].getDescription(), true);
+
+        goal = createCombobox(goalNames, 0);
+        goal.addItemListener(itemEvent -> {
+            int i = goal.getSelectedIndex();
+            if(i < 0 || i >= GameConstants.GAME_GOALS.length)
+                lblGoalDescription.setText("");
+            else
+                lblGoalDescription.setText(GameConstants.GAME_GOALS[i].getDescription());
+        });
 
         // Player rows:
-        // [Number] [Color] [Name] [Human/AI] (Team?)
-        Vector<String> playerTypes = new Vector<>();
-        for(Class<?> c : GameConstants.PLAYER_TYPES)
-            playerTypes.add(c.getSimpleName());
+            // [Number] [Color] [Name] [Human/AI] (Team?)
+            Vector<String> playerTypes = new Vector<>();
+            for(Class<?> c : GameConstants.PLAYER_TYPES) {
+                if (c.equals(Vodka.class)) {
+                    playerTypes.add("V.O.D.K.A");
+                }
+                else {
+                      playerTypes.add(c.getSimpleName());
+                }
 
+            }
+
+
+
+            //changed by Luca
+            // changes availability of player types depending on the game mode
+          goal.addItemListener(itemEvent1 -> {
+              int index = goal.getSelectedIndex();
+            if (index == 1 || index == 2 || index == 3) {
+                
+                   playerTypes.removeAll(playerTypes);
+            Class<?> c = GameConstants.PLAYER_TYPES[0];
+                playerTypes.add(c.getSimpleName());
+            }
+            else  {
+                playerTypes.removeAll(playerTypes);
+                for(Class<?> c : GameConstants.PLAYER_TYPES) {
+                    if (c.getClass() == (Class<?>)Vodka.class) {
+                        playerTypes.add("V.O.D.K.A");
+                    }
+                    else {
+                          playerTypes.add(c.getSimpleName());
+                    }
+
+                }
+            }
+          });
         playerConfig = new JComponent[GameConstants.MAX_PLAYERS][];
         for(int i = 0; i < GameConstants.MAX_PLAYERS; i++) {
             playerConfig[i] = new JComponent[] {
@@ -122,22 +172,7 @@ public class GameMenu extends View {
         lblMapSize = createLabel("Kartengröße", 16);
         mapSize = createCombobox(MapSize.getMapSizes(), MapSize.MEDIUM.ordinal());
 
-        // Goals
-        Vector<String> goalNames = new Vector<>();
-        for(Goal goal : GameConstants.GAME_GOALS)
-            goalNames.add(goal.getName());
-
-        lblGoal = createLabel("Mission", 16);
-        lblGoalDescription = createTextArea(GameConstants.GAME_GOALS[0].getDescription(), true);
-
-        goal = createCombobox(goalNames, 0);
-        goal.addItemListener(itemEvent -> {
-            int i = goal.getSelectedIndex();
-            if(i < 0 || i >= GameConstants.GAME_GOALS.length)
-                lblGoalDescription.setText("");
-            else
-                lblGoalDescription.setText(GameConstants.GAME_GOALS[i].getDescription());
-        });
+        
 
         // Buttons
         btnBack = createButton("Zurück");

@@ -225,7 +225,9 @@ public class MapPanel extends JScrollPane {
                         	List <Castle> oldC = currentPlayer.getCastles(game);
                         	
                             selectedCastle.moveTroops(nextCastle, nd.getValue() , selectedCastle.getOwner() , game); //changed
-                           //changed
+                            
+                            //changed for deathmatch mode : Luca
+                            // checks if the current player has gained a castle through moving his troops , if yes then prints a log
                             if (oldC.size() != game.getCurrentPlayer().getCastles(game).size() && game.getGoal().gameModeID == 3) {
                             	if (game.getCurrentPlayer().getCastles(game).get(game.getCurrentPlayer().getCastles(game).size() - 1).previousOwner == null) {
                                   	if (game.getGoal().gameModeID == 3 && currentPlayer.hasGained) {
@@ -458,8 +460,7 @@ public class MapPanel extends JScrollPane {
                     	if (region.getOwner() != null) {
                     		if (region.getMainCastle()) {
                     		
-                    		castle = resources.getCastle(color, 7);
-                    		//cIndex++;
+                    		castle = resources.getCastle(color, 7);                   		
                     		}
                     	}
                     	else {

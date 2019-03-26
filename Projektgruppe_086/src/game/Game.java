@@ -309,6 +309,7 @@ public class Game {
         
         if(round == 0 || (round == 1 && allCastlesChosen()) || (round > 1 && currentPlayer == startingPlayer) || /*changed*/ (round == 1 && goal.gameModeID == 3 && eachPlayerOneCastl())) {
         	// changed - Dominance : Sander
+        	// adds a flag point to the holder of the flag
         	if(goal.gameModeID == 1 && round >= 2) {
         		this.getMap().getCastles().stream().filter(c -> c.flag == true).forEach(t -> t.getOwner().addFlagRound());
              		
@@ -333,7 +334,7 @@ public class Game {
         
         else {
         	
-        	//changed for deatmatch mode : Luca - player get no troops per round
+        	//changed for deathmatch mode : Luca - player get no troops per round
         	if (goal.gameModeID == 3) {
         		addTroops = 0;
         	
@@ -344,6 +345,7 @@ public class Game {
             addScore(currentPlayer, addTroops * 5);
 
             // changed - Dominance : Sander
+            // gives the player who currently doesn't hold the flag more troops per round depending on the map size
             if(goal.gameModeID == 1) {
     	        for(Castle c: currentPlayer.getCastles(this)) {
     	        	if (c.flag == true) {
@@ -406,10 +408,21 @@ public class Game {
         
         if (currentPlayer.getJoker().getClass() == TroopsJoker.class && round>1 && currentPlayer.getJoker().isUsable()) {
         	if (currentPlayer.useJoker(currentPlayer.getJoker())) {
+        	
         		currentPlayer.getJoker().use();
-        		addTroops+=Math.round(-0.0292*Math.pow((gameMap.getWidth()/120), 2)+1.1591*(gameMap.getWidth()/120)-2.0649);
-        		((GameView) gameInterface).logLine("%PLAYER% hat den TroopsJoker benutzt und "+ Math.round(-0.0292*Math.pow((gameMap.getWidth()/120), 2)+1.1591*(gameMap.getWidth()/120)-2.0649) +" Truppen zusätzlich bekommen.", currentPlayer);
-        		
+        		//  changed for deathmatch mode : Luca
+        		// adds 15 troops to main castle instead of giving more troops per round
+        		if (goal.gameModeID == 3) {
+        			Optional<Castle> main = currentPlayer.getCastles(this).stream().filter(t -> t.getMainCastle()).findFirst();
+        			main.get().addTroops(15);
+        			((GameView) gameInterface).logLine("%PLAYER% hat den TroopsJoker benutzt und 15 Truppen zusätzlich bekommen.", currentPlayer);
+        		}
+        		else {
+               		addTroops+=Math.round(-0.0292*Math.pow((gameMap.getWidth()/120), 2)+1.1591*(gameMap.getWidth()/120)-2.0649);
+            		((GameView) gameInterface).logLine("%PLAYER% hat den TroopsJoker benutzt und "+ Math.round(-0.0292*Math.pow((gameMap.getWidth()/120), 2)+1.1591*(gameMap.getWidth()/120)-2.0649) +" Truppen zusätzlich bekommen.", currentPlayer);
+            			
+        		}
+ 
         	}
         }
         

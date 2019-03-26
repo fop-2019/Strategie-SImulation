@@ -34,7 +34,7 @@ public class GameConstants {
 
     public static final Goal GAME_GOALS[] = {
         new ConquerGoal(),
-        new SuddenDeath(),
+        new Suddendeath(),
         new Deathmatch(),
         new Dominance(),
     };

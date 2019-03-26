@@ -39,7 +39,7 @@ public class GameView extends View implements GameInterface {
     }
 
     private int sidebarWidth() {
-        return (int) Math.max(getWidth() * 0.15, 300);
+        return (int) Math.max(getWidth() * 0.2, 400);
     }
 
     private Dimension mapPanelSize() {
@@ -165,20 +165,22 @@ public class GameView extends View implements GameInterface {
          // changed - Dominance : Sander
             // shows flagrounds for each player instead of points
             if (game.getGoal().gameModeID == 1) {
-            	doc.insertString(doc.getLength(), "\n\nName\tFlagPoints\tBurgen\tTruppen\n", null);
+            	doc.insertString(doc.getLength(), "\n\nName\tFlagPoints\tBurgen\tTruppen\tJoker\n", null);
                 for (Player p : game.getPlayers()) {
                     StyleConstants.setForeground(style, p.getColor());
                     doc.insertString(doc.getLength(), p.getName(), style);
-                    doc.insertString(doc.getLength(), String.format(":\t%d\t%d\t%d\n", p.flagRounds, p.getNumRegions(game), p.getRemainingTroops()), null);
+                    String jo = p.getJoker().isUsable()? p.getJoker().toString():"-";
+                    doc.insertString(doc.getLength(), String.format(":\t%d\t%d\t%d\t%s\n", p.flagRounds, p.getNumRegions(game), p.getRemainingTroops(), jo), null);
                 }
             }
             else {            
 
-            doc.insertString(doc.getLength(), "\n\nName\tPunkte\tBurgen\tTruppen\n", null);
+            doc.insertString(doc.getLength(), "\n\nName\tPunkte\tBurgen\tTruppen\tJoker\n", null);
             for (Player p : game.getPlayers()) {
                 StyleConstants.setForeground(style, p.getColor());
                 doc.insertString(doc.getLength(), p.getName(), style);
-                doc.insertString(doc.getLength(), String.format(":\t%d\t%d\t%d\n", p.getPoints(), p.getNumRegions(game), p.getRemainingTroops()), null);
+                String jo = p.getJoker().isUsable()? p.getJoker().toString():"-";
+                doc.insertString(doc.getLength(), String.format(":\t%d\t%d\t%d\t%s\n", p.getPoints(), p.getNumRegions(game), p.getRemainingTroops(), jo), null);
             }
             }
         } catch(BadLocationException ex) {

@@ -3,7 +3,6 @@ package game.players;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -90,6 +89,7 @@ public class Vodka extends AI {
 	 * @param castles you want to get the castle with the most troops from
 	 * @return castle with highest troopCount out of castles
 	 */
+	@SuppressWarnings("unused")
 	private Castle getCastleWithMostTroops(List<Castle> castles) {
 		Castle maxTroops = castles.get(0);
 		for (Castle castle : castles) {
@@ -121,7 +121,7 @@ public class Vodka extends AI {
 		}
 		return myCastles.get(enemyCastlesNearby.indexOf(Collections.min(enemyCastlesNearby)));
 	}
-	
+
 	/**
 	 * gets the castle from the given castles list with the most enemy castles
 	 * connected to
@@ -288,7 +288,7 @@ public class Vodka extends AI {
 								}
 							});
 					if (castlesInKingdoms.get(i).size() == 0) {
-						strategicValue.add(1000);
+						strategicValue.add(game.getMap().getCastles().size() + 1);
 					} else {
 						strategicValue.add(negativeStrategicValue);
 					}
@@ -318,12 +318,17 @@ public class Vodka extends AI {
 				}
 			}
 		} else {
-
-			// Looks for attackable Kingdoms
+			int attackTrigger = 0;
+			
+			if (game.getMapSize() == MapSize.SMALL) {
+				attackTrigger = 2;
+			} else {
+				attackTrigger = 1;
+			}
 
 			targetKingdom = getTargetKingdom(game);
 
-			// 1. Distribute remaining troops
+			// Distribute remaining troops
 
 			while (this.getRemainingTroops() > 0) {
 				Castle fewestTroops = getCastleWithFewestTroops(getCastlesNearTargetKingdom(game, targetKingdom));
@@ -335,6 +340,7 @@ public class Vodka extends AI {
 			boolean secundaryAttackWon;
 
 			do {
+				// 1. Move Troops
 				if (getConnectedKingdoms(game).isEmpty()) {
 					return;
 				}
@@ -361,7 +367,7 @@ public class Vodka extends AI {
 					}
 				}
 
-				// 3. attack targetKingdom
+				// 2. attack targetKingdom
 				primaryAttackWon = false;
 				for (Castle castle : cNTK) {
 					if (castle.getTroopCount() < 2)
@@ -371,7 +377,7 @@ public class Vodka extends AI {
 					for (Edge<Castle> edge : game.getMap().getGraph().getEdges(node)) {
 						Castle otherCastle = edge.getOtherNode(node).getValue();
 						if (otherCastle.getOwner() != this
-								&& castle.getTroopCount() - 1 >= otherCastle.getTroopCount()) {
+								&& castle.getTroopCount() - attackTrigger >= otherCastle.getTroopCount()) {
 							AttackThread attackThread = game.startAttack(castle, otherCastle, castle.getTroopCount());
 							if (fastForward)
 								attackThread.fastForward();
@@ -386,7 +392,7 @@ public class Vodka extends AI {
 						break;
 				}
 
-				// 4. attack on different borders
+				// 3. attack on different borders
 				secundaryAttackWon = false;
 				for (Castle castle : castleOnNotAttractiveBorder) {
 					if (castle.getTroopCount() < 2)
@@ -396,7 +402,7 @@ public class Vodka extends AI {
 					for (Edge<Castle> edge : game.getMap().getGraph().getEdges(node)) {
 						Castle otherCastle = edge.getOtherNode(node).getValue();
 						if (otherCastle.getOwner() != this
-								&& castle.getTroopCount() - 1 >= otherCastle.getTroopCount()) {
+								&& castle.getTroopCount() - attackTrigger >= otherCastle.getTroopCount()) {
 							AttackThread attackThread = game.startAttack(castle, otherCastle, castle.getTroopCount());
 							if (fastForward)
 								attackThread.fastForward();
@@ -418,21 +424,23 @@ public class Vodka extends AI {
 
 	@Override
 	public boolean useJoker(Joker type) {
-		
+
 		int tK = this.getTargetKingdom(game);
 		if (type.getClass() == RevolutionJoker.class) {
-			
-			if (game.getMap().getCastles().stream().filter(c -> c.getKingdom().getType() == tK).collect(Collectors.toCollection(ArrayList::new)).size() < 3) {
-				return Math.random() < 0.85;
+			if (game.getMap().getCastles().stream().filter(c -> c.getKingdom().getType() == tK)
+					.filter(kC -> kC.getOwner() != this).collect(Collectors.toCollection(ArrayList::new)).size() < 3) {
+				return Math.random() < 0.9;
 			}
 			return false;
 		} else if (type.getClass() == DiceJoker.class) {
-			if (game.getMap().getCastles().stream().filter(c -> c.getKingdom().getType() == tK).collect(Collectors.toCollection(ArrayList::new)).size() < 3) {
-				return Math.random() < 0.7;
+			if (game.getMap().getCastles().stream().filter(c -> c.getKingdom().getType() == tK)
+					.filter(kC -> kC.getOwner() != this).collect(Collectors.toCollection(ArrayList::new)).size() < 3) {
+				return Math.random() < 0.9;
 			}
 		} else {
-			if (game.getMap().getCastles().stream().filter(c -> c.getKingdom().getType() == tK).collect(Collectors.toCollection(ArrayList::new)).size() < 3) {
-				return Math.random() < 0.7;
+			if (game.getMap().getCastles().stream().filter(c -> c.getKingdom().getType() == tK)
+					.filter(kC -> kC.getOwner() != this).collect(Collectors.toCollection(ArrayList::new)).size() < 3) {
+				return Math.random() < 0.8;
 			}
 		}
 		return false;
@@ -441,14 +449,14 @@ public class Vodka extends AI {
 	@Override
 	public Joker chooseJoker(Game game) {
 		if (game.getMapSize() == MapSize.SMALL) {
-			this.setJoker(new RevolutionJoker());
+			this.setJoker(new TroopsJoker());
 			return this.getJoker();
 		} else if (game.getMapSize() == MapSize.MEDIUM) {
 			double rnd = Math.random();
-			if (rnd <=0.2) {
+			if (rnd <= 0.2) {
 				this.setJoker(new RevolutionJoker());
 				return this.getJoker();
-			} else if (rnd <= 0.5) {
+			} else if (rnd <= 0.3) {
 				this.setJoker(new DiceJoker());
 				return this.getJoker();
 			} else {
@@ -457,7 +465,7 @@ public class Vodka extends AI {
 			}
 		} else {
 			double rnd = Math.random();
-			if (rnd <=0.1) {
+			if (rnd <= 0.1) {
 				this.setJoker(new RevolutionJoker());
 				return this.getJoker();
 			} else if (rnd <= 0.2) {
@@ -472,22 +480,25 @@ public class Vodka extends AI {
 
 	@Override
 	public void useRevolution(Game game, GameInterface gameInterface) {
-		
+
 //		for (Castle castle : game.getMap().getCastles()) {
 //			
 //		}
-		int tK = this.getTargetKingdom(game); 
-		Castle selectedCastle = this.getCastleWithMostEnemyConnections(game.getMap().getCastles().stream().filter(c -> c.getKingdom().getType() == tK).collect(Collectors.toCollection(ArrayList::new)), game.getMap().getGraph());
-		
-		((GameView) gameInterface).logLine("%PLAYER% hat den RevolutionJoker benutzt und hat die Herrschaft über "+ selectedCastle.getName() +" erhalten.", game.getCurrentPlayer());
-		System.out.println(game.getCurrentPlayer().getName() + " revolution at "+selectedCastle.getName() + " VODKA");
+		int tK = this.getTargetKingdom(game);
+		Castle selectedCastle = this.getCastleWithMostEnemyConnections(game.getMap().getCastles().stream()
+				.filter(c -> c.getKingdom().getType() == tK).filter(kC -> kC.getOwner() != this).collect(Collectors.toCollection(ArrayList::new)),
+				game.getMap().getGraph());
+
+		((GameView) gameInterface).logLine("%PLAYER% hat den RevolutionJoker benutzt und hat die Herrschaft über "
+				+ selectedCastle.getName() + " erhalten.", game.getCurrentPlayer());
+//		System.out.println(game.getCurrentPlayer().getName() + " revolution at " + selectedCastle.getName() + " VODKA");
 		game.getCurrentPlayer().getJoker().use();
 		Player opp = selectedCastle.getOwner();
-		opp.addTroops(selectedCastle.getTroopCount()-1);
+		opp.addTroops(selectedCastle.getTroopCount() - 1);
 		selectedCastle.removeTroops(selectedCastle.getTroopCount());
 		selectedCastle.setOwner(game.getCurrentPlayer());
 		selectedCastle.addTroops(1);
-		
+
 	}
 
 }

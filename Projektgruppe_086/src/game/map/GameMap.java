@@ -25,19 +25,7 @@ public class GameMap {
 
 	// Map Generation
 	private double[][] noiseValues;
-	static private int width, height, scale;
-
-	public static int getMapWidth() {
-		return width;
-	}
-
-	public static int getMapHeight() {
-		return height;
-	}
-
-	public static int getMapScale() {
-		return scale;
-	}
+	private int width, height, scale;
 
 	/**
 	 * Erzeugt eine neue leere Karte. Der Konstruktor sollte niemals direkt
@@ -50,9 +38,9 @@ public class GameMap {
 	 */
 	private GameMap(int width, int height, int scale) {
 		this.castleGraph = new Graph<>();
-		GameMap.width = width;
-		GameMap.height = height;
-		GameMap.scale = scale;
+		this.width = width;
+		this.height = height;
+		this.scale = scale;
 	}
 
 	/**

@@ -7,9 +7,11 @@ Spieler 3;1553550919803;5590;Eroberung
 Spieler 1;1553568506366;4850;Eroberung
 Vodka;1553568616815;3905;Eroberung
 Spieler 2;1553550919803;3665;Eroberung
+Spieler 1;1553614363805;3410;Eroberung
 Spieler 1;1553550919803;3140;Eroberung
 Spieler 4;1553568506366;2925;Eroberung
 Spieler 4;1553568616815;2855;Eroberung
+Spieler 2;1553614363805;2730;Eroberung
 Spieler 3;1553568506366;2445;Eroberung
 Spieler 3;1553568616815;2405;Eroberung
 Spieler 2;1553568385455;2185;Eroberung
