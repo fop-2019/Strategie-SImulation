@@ -334,6 +334,7 @@ public class GameView extends View implements GameInterface {
         	if (player.getJoker().getClass() == DiceJoker.class && player.getJoker().isUsable()) {
         		if (player.useJoker(player.getJoker())) {
         			player.getJoker().use();
+        			this.onUpdate();
             		bonus = 3;
             		this.logLine("%PLAYER% hat den DiceJoker benutzt", player);
         		}

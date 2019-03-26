@@ -8,10 +8,12 @@ Spieler 1;1553568506366;4850;Eroberung
 Vodka;1553568616815;3905;Eroberung
 Spieler 2;1553550919803;3665;Eroberung
 Spieler 1;1553614363805;3410;Eroberung
+Spieler 1;1553627235008;3290;Eroberung
 Spieler 1;1553550919803;3140;Eroberung
 Spieler 4;1553568506366;2925;Eroberung
 Spieler 4;1553568616815;2855;Eroberung
 Spieler 2;1553614363805;2730;Eroberung
+Spieler 2;1553627235008;2720;Eroberung
 Spieler 3;1553568506366;2445;Eroberung
 Spieler 3;1553568616815;2405;Eroberung
 Spieler 2;1553568385455;2185;Eroberung
@@ -21,8 +23,10 @@ Spieler 2;1553568506366;1360;Eroberung
 Spieler 1;1553371161720;1320;Eroberung
 Vodka;1553568385455;1315;Eroberung
 Spieler 2;1553563379527;1225;SuddenDeath
+Spieler 1;1553628129520;1060;Eroberung
 Spieler 1;1553426288304;900;Eroberung
 Spieler 2;1553371161720;470;Eroberung
+Spieler 2;1553628129520;445;Eroberung
 Spieler 2;1553426288304;355;Eroberung
 Spieler 1;1553561993814;195;SuddenDeath
 Spieler 2;1553562135929;155;Deathmatch

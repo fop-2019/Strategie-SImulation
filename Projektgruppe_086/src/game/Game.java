@@ -261,7 +261,8 @@ public class Game {
         gameInterface.onGameOver(winner);
     }
 
-    public void nextTurn() {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public void nextTurn() {
         if(goal.isCompleted()) {
             endGame();
             return;
@@ -410,6 +411,7 @@ public class Game {
         	if (currentPlayer.useJoker(currentPlayer.getJoker())) {
         	
         		currentPlayer.getJoker().use();
+        		gameInterface.onUpdate();
         		//  changed for deathmatch mode : Luca
         		// adds 15 troops to main castle instead of giving more troops per round
         		if (goal.gameModeID == 3) {
@@ -440,6 +442,7 @@ public class Game {
         	if (currentPlayer.getJoker().getClass() == RevolutionJoker.class && currentPlayer.getJoker().isUsable() && ((this.goal.gameModeID != 3 && this.round>1)||(this.goal.gameModeID == 3 &&this.round>2))) {
         		if (currentPlayer.useJoker(currentPlayer.getJoker())) {
         			((AI) currentPlayer).useRevolution(this, gameInterface);
+        			gameInterface.onUpdate();
         		}
         	}
             ((AI)currentPlayer).doNextTurn(this);

@@ -192,6 +192,7 @@ public class MapPanel extends JScrollPane {
                         if (iconRev.contains(mousePos)) {
 //                            game.chooseCastle(selectedCastle, currentPlayer);
                         	game.getCurrentPlayer().getJoker().use();
+                        	
                     		Player opp = selectedCastle.getOwner();
                     		opp.addTroops(selectedCastle.getTroopCount()-1);
                     		selectedCastle.removeTroops(selectedCastle.getTroopCount());

@@ -31,13 +31,15 @@ public class JokerMenu extends View{
     private Game game;
     private List<Player> players;
     private HashMap<Integer, Joker> aiJokers;
+    private GameMenu gameMenu;
     
 
-    public JokerMenu(GameWindow gameWindow, Game game) {
+    public JokerMenu(GameWindow gameWindow, Game game, GameMenu gameMenu) {
         super(gameWindow);
         this.game = game;
         players = game.getPlayers();
         aiJokers = new HashMap<>();
+        this.gameMenu = gameMenu;
         onInit();
     }
 
@@ -134,14 +136,23 @@ public class JokerMenu extends View{
                 createLabel(String.format("%d.", i + 1),16),
                 createLabel(playerNames[i], 16),
                 jokerChoice,
+                createLabel("", 16),
                 createLabel(pTypes.get(i), 16)
             };
 
 
             jokerConfig[i][0].setSize(25, 25);
             jokerConfig[i][1].setSize(150, 25);
+            try {
+            	jokerConfig[i][1].setForeground(game.getPlayers().get(i).getColor());
+            } catch (IndexOutOfBoundsException e) {
+            	
+            }
+            
+            
             jokerConfig[i][2].setSize(150, 25);
-            jokerConfig[i][3].setSize(100, 25);
+            jokerConfig[i][3].setSize(50, 25);
+            jokerConfig[i][4].setSize(100, 25);
 
             for(JComponent c : jokerConfig[i])
                 add(c);
@@ -160,7 +171,7 @@ public class JokerMenu extends View{
 	@Override
     public void actionPerformed(ActionEvent actionEvent) {
         if(actionEvent.getSource() == btnBack)
-            getWindow().setView(new GameMenu(getWindow()));
+            getWindow().setView(gameMenu);
         else if(actionEvent.getSource() == btnStart) {
 
             try {
