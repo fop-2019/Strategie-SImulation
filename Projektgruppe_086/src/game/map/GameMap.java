@@ -141,7 +141,15 @@ public class GameMap {
 					if (noiseValues[x_mid][y_mid] >= 0.6) {
 						String name = possibleNames.isEmpty() ? "Burg " + (castlesGenerated + 1)
 								: possibleNames.get((int) (Math.random() * possibleNames.size()));
-						Castle newCastle = new Castle(new Point(x0 + x, y0 + y), name);
+						Castle newCastle;
+
+						// changed - Dominance : Sander
+						if (castlesGenerated == 0) {
+							newCastle = new Castle(new Point(x0 + x, y0 + y), name, true);
+						} else {
+							newCastle = new Castle(new Point(x0 + x, y0 + y), name, false);
+						}
+
 						boolean doesIntersect = false;
 
 						for (Castle r : castleGraph.getAllValues()) {
@@ -186,14 +194,17 @@ public class GameMap {
 			tile = (width * scale + height * scale) / 8;
 		}
 		// radius if there are between 20 and 45 castles
-		else if (castleGraph.getNodes().size() >= 20 && castleGraph.getNodes().size() <= 45) {
+		else if (castleGraph.getNodes().size() >= 20 && castleGraph.getNodes().size() <= 40) {
 			System.out.println("between 20 and 45");
 			tile = (width * scale + height * scale) / 10;
 		}
-		// radius if there are more than 45 castles
-		else if (castleGraph.getNodes().size() > 45) {
-			System.out.println("more than 45");
+		// radius if there are more than 45 castles and less than 80
+		else if (castleGraph.getNodes().size() > 40 && castleGraph.getNodes().size() <= 80) {
+			System.out.println("more than 40 and less than 80");
 			tile = (width * scale + height * scale) / 12;
+		} else if (castleGraph.getNodes().size() > 80) {
+			System.out.println("more than 80");
+			tile = (width * scale + height * scale) / 14;
 		}
 
 		// calls connecting function for each castle
@@ -295,6 +306,7 @@ public class GameMap {
 	private void generateKingdoms(int kingdomCount) {
 		if (kingdomCount > 0 && kingdomCount < castleGraph.getAllValues().size()) {
 			Clustering clustering = new Clustering(castleGraph.getAllValues(), kingdomCount);
+			clustering.getSizeInfo(width , height, scale);
 			kingdoms = clustering.getPointsClusters();
 		} else {
 			kingdoms = new ArrayList<>();
@@ -322,7 +334,7 @@ public class GameMap {
 			throw new IllegalArgumentException();
 
 		System.out.println(String.format("Generating new map, castles=%d, width=%d, height=%d, kingdoms=%d",
-				castleCount, width*scale, height*scale, kingdomCount));
+				castleCount, width * scale, height * scale, kingdomCount));
 		GameMap gameMap = new GameMap(width, height, scale);
 		gameMap.generateBackground();
 		gameMap.generateCastles(castleCount);

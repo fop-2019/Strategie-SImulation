@@ -187,7 +187,7 @@ public class MapPanel extends JScrollPane {
                         } else {
                             selectNew = true;
                         }
-                    } else if (selectedCastle.getOwner() != currentPlayer && game.getRound() > 1 && currentPlayer.getJoker().isUsable() && currentPlayer.getJoker().getClass()==RevolutionJoker.class) {
+                    } else if (selectedCastle.getOwner() != currentPlayer && !selectedCastle.getMainCastle() && selectedCastle.getOwner() != null &&  ((game.getGoal().gameModeID != 3 && game.getRound()>1)||(game.getGoal().gameModeID == 3 &&game.getRound()>2)) && currentPlayer.getJoker().isUsable() && currentPlayer.getJoker().getClass()==RevolutionJoker.class) {
                     	Rectangle iconRev = getBoundsIconRevolution(castlePos);
                         if (iconRev.contains(mousePos)) {
 //                            game.chooseCastle(selectedCastle, currentPlayer);
@@ -221,7 +221,18 @@ public class MapPanel extends JScrollPane {
                     } else if(currentAction == Action.MOVING && pathFinding.getPath(nextCastle) != null) {
                         NumberDialog nd = new NumberDialog("Wie viele Truppen möchtest du verschieben?", 1, selectedCastle.getTroopCount() - 1, 1);
                         if(nd.showDialog(MapPanel.this)) {
-                            selectedCastle.moveTroops(nextCastle, nd.getValue());
+                        	//changed
+                        	List <Castle> oldC = currentPlayer.getCastles(game);
+                        	
+                            selectedCastle.moveTroops(nextCastle, nd.getValue() , selectedCastle.getOwner() , game); //changed
+                           //changed
+                            if (oldC.size() != game.getCurrentPlayer().getCastles(game).size() && game.getGoal().gameModeID == 3) {
+                            	if (game.getCurrentPlayer().getCastles(game).get(game.getCurrentPlayer().getCastles(game).size() - 1).previousOwner == null) {
+                                  	if (game.getGoal().gameModeID == 3 && currentPlayer.hasGained) {
+                                		gameView.onGainingCastle(game.getCurrentPlayer(), 5);
+                                	}
+                            	}
+                            }
                             currentAction = Action.NONE;
                             selectedCastle = null;
                             highlightedEdges = null;
@@ -274,9 +285,9 @@ public class MapPanel extends JScrollPane {
                             return;
                         }
                     }
-                } else if (selectedCastle.getOwner() != game.getCurrentPlayer() && game.getRound() > 1  && game.getCurrentPlayer().getJoker().isUsable() && game.getCurrentPlayer().getJoker().getClass()==RevolutionJoker.class) {
+                } else if (selectedCastle.getOwner() != game.getCurrentPlayer() && ((game.getGoal().gameModeID != 3 && game.getRound()>1)||(game.getGoal().gameModeID == 3 &&game.getRound()>2))  && game.getCurrentPlayer().getJoker().isUsable() && game.getCurrentPlayer().getJoker().getClass()==RevolutionJoker.class) {
                 	Rectangle iconRev = getBoundsIconRevolution(castlePos);
-                    if (iconRev.contains(mousePos)) {
+                    if (iconRev.contains(mousePos) && !selectedCastle.getMainCastle()) {
                         setToolTipText("Hier eine Revolution starten");
                         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                         return;
@@ -440,6 +451,26 @@ public class MapPanel extends JScrollPane {
                     Color color = region.getOwner() == null ? Color.WHITE : region.getOwner().getColor();
                     Point location = translate(region.getLocationOnMap());
                     BufferedImage castle = resources.getCastle(color, region.getType());
+                 // changed - Deathmatch : Luca
+                    // loads a different castle icon for main castles
+                    if (game.getGoal().gameModeID == 2) {
+                    
+                    	if (region.getOwner() != null) {
+                    		if (region.getMainCastle()) {
+                    		
+                    		castle = resources.getCastle(color, 7);
+                    		//cIndex++;
+                    		}
+                    	}
+                    	else {
+                        	castle = resources.getCastle(color, region.getType());
+                    	}
+                    }
+                    // changed - Dominance : Sander
+                    // loads different icon for flagged castle
+                    else if (game.getGoal().gameModeID == 1 && region.flag == true && game.getRound() > 1) {
+                    	castle = resources.getCastle(color, 6);
+                    }
                     g.drawImage(castle, location.x, location.y, null);
 
                     // Draw troop count
@@ -499,7 +530,7 @@ public class MapPanel extends JScrollPane {
                             BufferedImage icons[] = {plusIcon, arrowIcon, swordsIcon};
                             for (int i = 0; i < icons.length; i++)
                                 g.drawImage(icons[i], iconsX + (ICON_SIZE + 2) * i, iconsY, ICON_SIZE, ICON_SIZE, null);
-                        } else if (selectedCastle.getOwner() != game.getCurrentPlayer() && game.getRound() > 1  && game.getCurrentPlayer().getJoker().getClass()==RevolutionJoker.class && game.getCurrentPlayer().getJoker().isUsable()) {
+                        } else if (selectedCastle.getOwner() != game.getCurrentPlayer() && !selectedCastle.getMainCastle() && ((game.getGoal().gameModeID != 3 && game.getRound()>1)||(game.getGoal().gameModeID == 3 &&game.getRound()>2))  && game.getCurrentPlayer().getJoker().getClass()==RevolutionJoker.class && game.getCurrentPlayer().getJoker().isUsable()) {
                         	BufferedImage revIcon = resources.getRevolutionIcon();
                         	Rectangle bounds = getBoundsIconRevolution(location);
                         	g.drawImage(revIcon, bounds.x, bounds.y, ICON_SIZE, ICON_SIZE, null);

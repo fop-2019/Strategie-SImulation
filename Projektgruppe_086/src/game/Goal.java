@@ -5,6 +5,7 @@ public abstract class Goal {
     private Game game;
     private final String description;
     private final String name;
+    public int gameModeID; //created to identify which gamemode is currently active
 
     public Goal(String name, String description) {
         this.name = name;

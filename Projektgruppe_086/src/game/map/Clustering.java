@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import game.Game;
+import gui.views.GameMenu;
+
 import java.awt.*;
 
 /**
@@ -12,8 +15,10 @@ import java.awt.*;
  */
 public class Clustering {
 
+	private Random random;
 	private final List<Castle> allCastles;
 	private final int kingdomCount;
+	private int width , height , scale;
 
 	/**
 	 * Ein neues Clustering-Objekt erzeugen.
@@ -25,9 +30,18 @@ public class Clustering {
 		if (kingdomCount < 2)
 			throw new IllegalArgumentException("Ungültige Anzahl an Königreichen");
 
-		new Random();
+		this.random = new Random();
 		this.kingdomCount = kingdomCount;
 		this.allCastles = Collections.unmodifiableList(castles);
+	}
+	
+	/*
+	 * Get size info of current map to create kingdoms
+	 */
+	public  void getSizeInfo (int width, int height , int scale) {
+		this.width = width;
+		this.height = height;
+		this.scale = scale;
 	}
 
 	/**
@@ -39,13 +53,14 @@ public class Clustering {
 		int h, w, s;
 		List<Kingdom> currentKingdoms = new ArrayList<Kingdom>();
 		List<Kingdom> previousKingdoms = new ArrayList<Kingdom>();
-		h = GameMap.getMapHeight();
-		w = GameMap.getMapWidth();
-		s = GameMap.getMapScale();
-//		System.out.println(h + " " + w);
+		h = height;
+		w = width;
+		s = scale;
+		//System.out.println(w + " " + h);
 		int closestKingdom = -1;
 		double smallestDist = (int) Math.floor(Math.sqrt((w * w * s * s) + (h * h * s * s)));
 		Point[] centers = new Point[kingdomCount];
+		System.out.println(kingdomCount);
 
 		// generating first random centers
 		for (int i = 0; i < kingdomCount; i++) {

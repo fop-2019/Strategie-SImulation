@@ -2,6 +2,7 @@ package gui.views;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.Optional;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -159,12 +160,26 @@ public class GameView extends View implements GameInterface {
                 StyleConstants.setForeground(style, game.getCurrentPlayer().getColor());
                 doc.insertString(doc.getLength(), game.getCurrentPlayer().getName(), style);
             }
+            
+            
+         // changed - Dominance : Sander
+            // shows flagrounds for each player instead of points
+            if (game.getGoal().gameModeID == 1) {
+            	doc.insertString(doc.getLength(), "\n\nName\tFlagPoints\tBurgen\tTruppen\n", null);
+                for (Player p : game.getPlayers()) {
+                    StyleConstants.setForeground(style, p.getColor());
+                    doc.insertString(doc.getLength(), p.getName(), style);
+                    doc.insertString(doc.getLength(), String.format(":\t%d\t%d\t%d\n", p.flagRounds, p.getNumRegions(game), p.getRemainingTroops()), null);
+                }
+            }
+            else {            
 
             doc.insertString(doc.getLength(), "\n\nName\tPunkte\tBurgen\tTruppen\n", null);
             for (Player p : game.getPlayers()) {
                 StyleConstants.setForeground(style, p.getColor());
                 doc.insertString(doc.getLength(), p.getName(), style);
                 doc.insertString(doc.getLength(), String.format(":\t%d\t%d\t%d\n", p.getPoints(), p.getNumRegions(game), p.getRemainingTroops()), null);
+            }
             }
         } catch(BadLocationException ex) {
             ex.printStackTrace();
@@ -224,12 +239,36 @@ public class GameView extends View implements GameInterface {
         if(game.getRound() == 1)
             this.logLine("%PLAYER% muss " + troopsGot + " Burgen auswählen.", currentPlayer);
         else
-            this.logLine("%PLAYER% erhält " + troopsGot + " Truppen.", currentPlayer);
+        	if (game.getGoal().gameModeID != 3)
+        		this.logLine("%PLAYER% erhält " + troopsGot + " Truppen.", currentPlayer);
 
         map.clearSelection();
         updateStats();
 
         button.setText(human ? "Nächste Runde" : "Überspringen");
+    }
+    
+  //created for deathmatch mode : Luca
+    public void onGainingCastle (Player currentPlayer , int troopsGot) {
+    	Optional<Castle> main = currentPlayer.getCastles(game).stream().filter(t -> t.getMainCastle()).findFirst();
+    	
+    	this.logLine("%PLAYER% erhält " + troopsGot + " Truppen in " + main.get().getName(), currentPlayer);
+    }
+    //created for deathmatch mode : Luca
+    public void onLosing (Player loosingPlayer , Player Conquerer) {
+    	this.logLine("%PLAYER% hat  %PLAYER% vernichtet! " , Conquerer , loosingPlayer);
+    }
+    //created for deathmatch mode : Luca
+    public void onGainingKingdom (Player currentPlayer) {
+    	if (game.getGoal().gameModeID == 3) {
+    		this.logLine("%PLAYER% hat ein Königreich erobert und erhält 5 Truppen in jeder Burg!", currentPlayer);
+    	}
+    }
+    //created for suddendeath mode : Luca
+    public void onSurroundingCastle(Player currentPlayer , int troopsGot) {
+    	
+    	Optional<Castle> main = currentPlayer.getCastles(game).stream().filter(t -> t.getMainCastle()).findFirst();
+    	this.logLine("%PLAYER% erhält " + troopsGot + " Truppen in benachbarten Burgen von " + main.get().getName(), currentPlayer);
     }
 
     @Override

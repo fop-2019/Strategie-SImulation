@@ -9,6 +9,7 @@ public class ConquerGoal extends Goal {
 
     public ConquerGoal() {
         super("Eroberung", "Derjenige Spieler gewinnt, der als erstes alle Gebiete erobert hat.");
+        this.gameModeID = 0;
     }
 
     @Override

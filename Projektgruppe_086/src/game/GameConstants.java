@@ -17,6 +17,7 @@ public class GameConstants {
     public static final int CASTLES_NUMBER_MULTIPLIER = 7;
     public static final int CASTLES_AT_BEGINNING = 3;
     public static final int TROOPS_PER_ROUND_DIVISOR = 3;
+    public static final int CASTLES_AT_BEGINNING_3 = 1; //changed for deathmatch mode : Luca
 
     public static final Color COLOR_WATER = Color.BLUE;
     public static final Color COLOR_SAND  = new Color(210, 170, 109);
@@ -33,7 +34,9 @@ public class GameConstants {
 
     public static final Goal GAME_GOALS[] = {
         new ConquerGoal(),
-        // TODO: Add more Goals
+        new SuddenDeath(),
+        new Deathmatch(),
+        new Dominance(),
     };
 
     public static final Class<?> PLAYER_TYPES[] = {

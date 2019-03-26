@@ -2,7 +2,13 @@ Spieler 4;1553550919803;10180;Eroberung
 Spieler 3;1553550919803;5590;Eroberung
 Spieler 2;1553550919803;3665;Eroberung
 Spieler 1;1553550919803;3140;Eroberung
+Spieler 1;1553563379527;1440;SuddenDeath
 Spieler 1;1553371161720;1320;Eroberung
+Spieler 2;1553563379527;1225;SuddenDeath
 Spieler 1;1553426288304;900;Eroberung
 Spieler 2;1553371161720;470;Eroberung
 Spieler 2;1553426288304;355;Eroberung
+Spieler 1;1553561993814;195;SuddenDeath
+Spieler 2;1553562135929;155;Deathmatch
+Spieler 2;1553561993814;30;SuddenDeath
+Spieler 1;1553562135929;5;Deathmatch

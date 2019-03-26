@@ -1,10 +1,12 @@
 package game;
 
 import game.map.Castle;
+import game.map.Kingdom;
 
 import java.awt.Color;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,12 +17,22 @@ public abstract class Player {
     private int points;
     private int remainingTroops;
     private Joker joker;
+    private boolean gainedCastleId3; //changed - deathmatch : Luca
+    public int flagRounds; // changed - dominance : Sander
+    public boolean playerwithflag; // changed - dominance : Sander
+    public boolean hasGained; // changed - deathmatch : Luca
+    private ArrayList<Kingdom> hasConquered;
 
     protected Player(String name, Color color) {
         this.name = name;
         this.points = 0;
         this.color = color;
         this.remainingTroops = 0;
+        this.gainedCastleId3 = false; // changed - deathmatch : Luca
+        this.flagRounds = 0; // changed - dominance : Sander
+        this.playerwithflag = false; // changed - dominance : Sander
+        this.hasGained = false; // changed - deathmatch : Luca
+        this.hasConquered = new ArrayList<Kingdom>();
     }
 
     public int getRemainingTroops() {
@@ -40,8 +52,51 @@ public abstract class Player {
         }
     }
 
+    public void hasGained(boolean state)  {
+    	this.hasGained = state;
+    }
+    
+ // changed - Dominance : Sander
+    /**
+     * Adds one to the attribut flagRounds
+     */
+    public void addFlagRound() {
+    	this.flagRounds++;
+    }
+    
     public void setColor(Color c) {
         this.color = c;
+    }
+    
+  //changed
+    public boolean getGainedCastleId3( ) {
+    	return this.gainedCastleId3;
+    }
+    //changed
+    public void setGainedCastleId3 (boolean state) {
+    	this.gainedCastleId3 = state;
+    }
+    /**
+     * 
+     * @param kingdom
+     * @return true if kingdom is not in hasConquered else false
+     */
+    public boolean hasConqueredKingdom (Kingdom kingdom) {
+    	if (hasConquered.isEmpty()) 
+    		return true;
+    	
+    	else if (hasConquered.contains(kingdom))
+    		return false;
+    	else
+    		return true;
+    }
+    /**
+     * Adds given kingdom to hasConquered.
+     * @param kingdom kingdom
+     */
+    public void addToConquered (Kingdom kingdom) {
+    	if (hasConquered.isEmpty() || !hasConquered.contains(kingdom) )
+    			hasConquered.add(kingdom);
     }
 
     public Color getColor() {

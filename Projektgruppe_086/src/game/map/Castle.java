@@ -1,8 +1,10 @@
 package game.map;
 
+import game.Game;
 import game.Player;
 
 import java.awt.*;
+import java.util.Optional;
 
 /**
  * Diese Klasse representiert eine Burg.
@@ -17,22 +19,40 @@ public class Castle {
     private Kingdom kingdom;
     private Point location;
     private String name;
+    private boolean mainCastle; // changed - SuddenDeath : Luca
+    public boolean flag; // changed - Dominance : Sander
+    public Player previousOwner; // changed - Deathmatch : Luca
+    //public boolean hasGained; // changed - Deathmatch : Luca
 
     /**
      * Eine neue Burg erstellen
      * @param location die Koordinaten der Burg
      * @param name der Name der Burg
      */
-    public Castle(Point location, String name) {
+    public Castle(Point location, String name , /* changed - Dominance : Sander*/ boolean  flag) {
         this.location = location;
         this.troopCount = 0;
         this.owner = null;
         this.kingdom = null;
         this.name = name;
+        this.mainCastle = false; // changed - SuddenDeath : Luca
+        this.flag = flag;  // changed - Dominance : Sander
+        this.previousOwner = null; // changed -Deathmatch : Luca
+        //this.hasGained = false; // changed - Deathmatch : Luca
+        
+        
     }
 
     public Player getOwner() {
         return this.owner;
+    }
+ // created - SuddenDeath : Luca
+    public void setMainCastle(boolean state) {
+    	this.mainCastle = state;
+    }
+ // created - SuddenDeath : Luca
+    public boolean getMainCastle() {
+    	return this.mainCastle;
     }
 
     public Kingdom getKingdom() {
@@ -49,10 +69,9 @@ public class Castle {
      * @param target
      * @param troops
      */
-    public void moveTroops(Castle target, int troops) {
-
+    public void moveTroops(Castle target, int troops , Player currentPlayer , Game game /*changed*/) {
         // Troops can only be moved to own regions
-        if(target.owner != this.owner)
+        if(game.getGoal().gameModeID != 3 && target.owner != this.owner || game.getGoal().gameModeID == 3 &&  /*changed*/ (target.owner == null && currentPlayer.getGainedCastleId3() == true || target.owner != null && target.owner != this.owner) )
             return;
 
         // At least one unit must remain in the source region
@@ -61,7 +80,24 @@ public class Castle {
 
         this.troopCount -= troops;
         target.troopCount += troops;
-    }
+        
+        //changed for deathmatch mode : Luca
+        // if target castle is neutral currentPlayer conquers it and gets 5 troops added to his starter castle
+        if (game.getGoal().gameModeID == 3) {
+	        if(target.getOwner() == null && currentPlayer.getGainedCastleId3() == false) {
+	        	
+
+	        	target.setOwner(currentPlayer);
+	        	Optional<Castle> main = currentPlayer.getCastles(game).stream().filter(t -> t.getMainCastle()).findFirst();
+	        	main.get().addTroops(5);
+	        	currentPlayer.hasGained = true;
+	        	currentPlayer.setGainedCastleId3(true);
+	        	
+	        } 
+        }
+
+       }
+    
 
     public Point getLocationOnMap() {
         return this.location;
@@ -86,7 +122,10 @@ public class Castle {
         Point otherLocation = next.getLocationOnMap();
         return this.distance(otherLocation);
     }
-
+    // changed
+    public void setPreviousOwner(Player player) {
+    	this.previousOwner = player;
+    }
     public void setOwner(Player player) {
         this.owner = player;
     }

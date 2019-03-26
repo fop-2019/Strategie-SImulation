@@ -2,6 +2,7 @@ package game;
 
 import java.util.*;
 
+import base.Edge;
 import game.jokers.RevolutionJoker;
 import game.jokers.TroopsJoker;
 import game.map.Castle;
@@ -54,6 +55,11 @@ public class Game {
         this.mapSize = mapSize;
     }
 
+  //created - Dominance : Sander
+    public Castle getFlagCastle() {
+    	return getMap().getCastles().stream().filter(c -> c.flag == true).findFirst().get();
+    }
+    
     private void generateMap() {
 
         int mapSizeMultiplier = this.mapSize.ordinal() + 1;
@@ -109,7 +115,7 @@ public class Game {
         if(attackThread != null)
             return attackThread;
 
-        if(source.getOwner() == target.getOwner() || troopCount < 1)
+        if(source.getOwner() == target.getOwner() || troopCount < 1 ||  /* changed */ target.getOwner() == null)
             return null;
 
         attackThread = new AttackThread(this, source, target, troopCount);
@@ -131,10 +137,31 @@ public class Game {
                 defenderCastle.removeTroops(1);
                 if(defenderCastle.getTroopCount() == 0) {
                     attackerCastle.removeTroops(1);
+                    if(defenderCastle.getMainCastle()) {   //changed for deathmatch mode : Luca
+                    	defenderCastle.setMainCastle(false);
+                    }
                     defenderCastle.setOwner(attacker);
+                    defenderCastle.setPreviousOwner(defender);   //changed for deathmatch mode : Luca
+                    attacker.hasGained = true;   //changed for deathmatch mode : Luca
                     defenderCastle.addTroops(1);
                     gameInterface.onConquer(defenderCastle, attacker);
                     addScore(attacker, 50);
+                    //changed for deathmatch mode : Luca
+                    if (getGoal().gameModeID == 3 ) {       	                    	
+                    	Optional<Castle> main = currentPlayer.getCastles(this).stream().filter(t -> t.getMainCastle()).findFirst();
+                    	if(goal.hasLost(defender)) {
+                    		main.get().addTroops(35);
+                    		gameInterface.onLosing(defender , attacker);
+                    		gameInterface.onGainingCastle(getCurrentPlayer(), 35);
+                    	}
+                    	//------
+                    	else {
+                    		main.get().addTroops(10);
+                    		gameInterface.onGainingCastle(getCurrentPlayer(), 10);
+                    	}
+
+                		
+                    }
                     break;
                 } else {
                     addScore(attacker, 20);
@@ -152,7 +179,7 @@ public class Game {
         if(troopCount >= source.getTroopCount() || source.getOwner() != destination.getOwner())
             return;
 
-        source.moveTroops(destination, troopCount);
+        source.moveTroops(destination, troopCount, currentPlayer, this);
         gameInterface.onUpdate();
     }
 
@@ -168,6 +195,11 @@ public class Game {
     private boolean allCastlesChosen() {
         return gameMap.getCastles().stream().noneMatch(c -> c.getOwner() == null);
     }
+    
+  //changed
+    private boolean eachPlayerOneCastl( ) {
+    	return players.stream().allMatch(t -> t.getCastles(this).size() == 1);
+    }
 
     public AttackThread getAttackThread() {
         return this.attackThread;
@@ -180,7 +212,14 @@ public class Game {
         gameInterface.onCastleChosen(castle, player);
         player.removeTroops(1);
         castle.setOwner(currentPlayer);
-        castle.addTroops(1);
+        //changed
+        if (goal.gameModeID == 3 && player.getCastles(this).size() == 1) {
+        	castle.addTroops(20);
+        	castle.setMainCastle(true);
+        }
+        else  {
+            castle.addTroops(1);	
+        }
         addScore(player, 5);
 
         if(player.getRemainingTroops() == 0 || allCastlesChosen()) {
@@ -245,24 +284,118 @@ public class Game {
         }
 
         currentPlayer = nextPlayer;
-        if(round == 0 || (round == 1 && allCastlesChosen()) || (round > 1 && currentPlayer == startingPlayer)) {
-            round++;
+        
+      //changed for suddendeath mode : Luca -  choose mainCastle for each player
+        if (goal.gameModeID == 2 && startingPlayer.getCastles(this).size() == 0) {
+        		ArrayList<Integer> used = new ArrayList<Integer>();
+        	for (Player p : players) {
+
+        		int random = (int) Math.floor(Math.random()*gameMap.getCastles().size());
+        		while (used.contains(random)) {
+        			random = (int) Math.floor(Math.random()*gameMap.getCastles().size());
+        		}
+            	gameMap.getCastles().get(random).setMainCastle(true);
+            	gameMap.getCastles().get(random).setOwner(p);
+            	gameMap.getCastles().get(random).addTroops(50);
+            	used.add(random);
+        	}          
+        }
+
+        currentPlayer.setGainedCastleId3(false); //changed
+        
+        if(round == 0 || (round == 1 && allCastlesChosen()) || (round > 1 && currentPlayer == startingPlayer) || /*changed*/ (round == 1 && goal.gameModeID == 3 && eachPlayerOneCastl())) {
+        	// changed - Dominance : Sander
+        	if(goal.gameModeID == 1 && round >= 2) {
+        		this.getMap().getCastles().stream().filter(c -> c.flag == true).forEach(t -> t.getOwner().addFlagRound());
+             		
+        	}
+        	round++;
             gameInterface.onNewRound(round);
         }
 
         int numRegions = currentPlayer.getNumRegions(this);
 
         int addTroops;
+        boolean anyNeighbourCastle = false;
         if(round == 1)
-            addTroops = GameConstants.CASTLES_AT_BEGINNING;
+        	//changed for deathmatch mode : Luca - players can only choose one castle instead of 3
+	    	if ( goal.gameModeID == 3) {
+	    		addTroops = GameConstants.CASTLES_AT_BEGINNING_3;
+	    	}
+	    	else {
+	    		addTroops = GameConstants.CASTLES_AT_BEGINNING;		
+	    	}
+        
+        
         else {
+        	
+        	//changed for deatmatch mode : Luca - player get no troops per round
+        	if (goal.gameModeID == 3) {
+        		addTroops = 0;
+        	
+        	}
+        	else {
+        		
             addTroops = Math.max(3, numRegions / GameConstants.TROOPS_PER_ROUND_DIVISOR);
             addScore(currentPlayer, addTroops * 5);
 
+            // changed - Dominance : Sander
+            if(goal.gameModeID == 1) {
+    	        for(Castle c: currentPlayer.getCastles(this)) {
+    	        	if (c.flag == true) {
+    	        		currentPlayer.playerwithflag = true;
+    	        	}
+    	        }
+    	        if (currentPlayer.playerwithflag == false && round > 1) {
+    	        	if (mapSize == MapSize.SMALL) {
+    	        	      addTroops++;
+    	        	}
+    	        	else if (mapSize == MapSize.MEDIUM) {
+    		        	  addTroops = addTroops + 2;
+    		        }
+    	        	else if (mapSize == MapSize.LARGE) {
+    	        		  addTroops = addTroops + 3;		      
+    	            }
+    	        }
+            }
+            
+         // changed - SuddenDeath : Luca
+            // adds troops to surrounding castles of main castle
+            else if (goal.gameModeID == 2 && round > 1) {
+            	Optional<Castle> cCastle = currentPlayer.getCastles(this).stream().filter(t -> t.getMainCastle()).findFirst();
+            	
+            	List<Edge<Castle>> neighbourCastle = gameMap.getGraph().getEdges(gameMap.getGraph().getNode(cCastle.get()));
+
+            	for (Edge c: neighbourCastle) {
+            		
+            		Castle current = (Castle) c.getOtherNode(gameMap.getGraph().getNode(cCastle.get())).getValue();
+            		if(current.getOwner() == currentPlayer) {
+            			current.addTroops(5);
+                		anyNeighbourCastle = true;	
+            		}
+            	
+            		
+            		
+            	};
+            	
+            }
+    	}
+            
             for(Kingdom kingdom : gameMap.getKingdoms()) {
                 if(kingdom.getOwner() == currentPlayer) {
+                	//changed for deathmatch mode : Luca - gives a player that owns a kingdom five troops in every castle he owns and prints it in the log
+                	if (goal.gameModeID == 3 && currentPlayer.hasConqueredKingdom(kingdom)) {
+                		addScore(currentPlayer, 10);
+                		currentPlayer.addToConquered(kingdom);
+                		for (Castle c : currentPlayer.getCastles(this)) {
+                			c.addTroops(5);
+                		}
+                		gameInterface.onGainingKingdom(currentPlayer);
+                	}
+                	else if (goal.gameModeID != 3){
                     addScore(currentPlayer, 10);
                     addTroops++;
+                	}
                 }
             }
         }
@@ -279,8 +412,15 @@ public class Game {
         currentPlayer.addTroops(addTroops);
         boolean isAI = (currentPlayer instanceof AI);
         gameInterface.onNextTurn(currentPlayer, addTroops, !isAI);
+        
+        // changed for suddendeath mode : Luca 
+        //if main castle has neighbours prints this out in the log
+        if (round > 1 && anyNeighbourCastle) {
+            gameInterface.onSurroundingCastle(currentPlayer , 5);	
+        }
+        
         if(isAI) {
-        	if (currentPlayer.getJoker().getClass() == RevolutionJoker.class && currentPlayer.getJoker().isUsable() && this.round>1) {
+        	if (currentPlayer.getJoker().getClass() == RevolutionJoker.class && currentPlayer.getJoker().isUsable() && ((this.goal.gameModeID != 3 && this.round>1)||(this.goal.gameModeID == 3 &&this.round>2))) {
         		if (currentPlayer.useJoker(currentPlayer.getJoker())) {
         			((AI) currentPlayer).useRevolution(this, gameInterface);
         		}
@@ -288,6 +428,8 @@ public class Game {
             ((AI)currentPlayer).doNextTurn(this);
         }
 
+        currentPlayer.hasGained = false;
+        anyNeighbourCastle = false; //changed for suddendeath mode : Luca
         playerQueue.add(currentPlayer);
     }
 
@@ -307,10 +449,8 @@ public class Game {
         return this.isOver;
     }
 
-    /**
-     * executes the benefits of the RevolutionJoker
-     * @param selectedCastle castle selected by player
-     * @param user user of the joker
-     */
+	public Goal getGoal() {
+		return goal;
+	}
 	
 }

@@ -138,6 +138,13 @@ public class BasicAI extends AI {
 				castles.addAll(opp.getCastles(game));
 			}
 		}
+		if (game.getGoal().gameModeID == 2) {
+			for (Castle c:castles) {
+				if (c.getMainCastle()) {
+					castles.remove(c);
+				}
+			}
+		} 
 		Castle selectedCastle = castles.get((int) Math.round(Math.random()*castles.size()));
 		((GameView) gameInterface).logLine("%PLAYER% hat den RevolutionJoker benutzt und hat die Herrschaft über "+ selectedCastle.getName() +" erhalten.", game.getCurrentPlayer());
 		System.out.println(game.getCurrentPlayer().getName() + " revolution at "+selectedCastle.getName());
