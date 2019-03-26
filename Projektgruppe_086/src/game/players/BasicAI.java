@@ -111,13 +111,11 @@ public class BasicAI extends AI {
 
 	@Override
 	public boolean useJoker(Joker type) {
-		System.out.println("joker used");
 		return Math.random()<0.33;
-		
 	}
 
 	@Override
-	public Joker chooseJoker() {
+	public Joker chooseJoker(Game game) {
 		
 		int rnd = (int) Math.round(Math.random()*2)+1;
 		

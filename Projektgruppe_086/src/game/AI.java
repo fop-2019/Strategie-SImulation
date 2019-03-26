@@ -23,9 +23,10 @@ public abstract class AI extends Player {
     
     /**
      * chooses the joker for the game
+     * @param game 
      * @return chosen joker
      */
-    public abstract Joker chooseJoker();
+    public abstract Joker chooseJoker(Game game);
     
     public abstract void useRevolution(Game game, GameInterface gameInterface);
 

@@ -54,6 +54,10 @@ public class Game {
     public void setMapSize(MapSize mapSize) {
         this.mapSize = mapSize;
     }
+    
+    public MapSize getMapSize() {
+    	return this.mapSize;
+    }
 
   //created - Dominance : Sander
     public Castle getFlagCastle() {

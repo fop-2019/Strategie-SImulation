@@ -1,9 +1,23 @@
+Spieler 4;1553568763586;16935;Eroberung
+Spieler 3;1553568763586;15275;Eroberung
+Spieler 1;1553568763586;14595;Eroberung
 Spieler 4;1553550919803;10180;Eroberung
+Spieler 2;1553568763586;6100;Eroberung
 Spieler 3;1553550919803;5590;Eroberung
+Spieler 1;1553568506366;4850;Eroberung
+Vodka;1553568616815;3905;Eroberung
 Spieler 2;1553550919803;3665;Eroberung
 Spieler 1;1553550919803;3140;Eroberung
+Spieler 4;1553568506366;2925;Eroberung
+Spieler 4;1553568616815;2855;Eroberung
+Spieler 3;1553568506366;2445;Eroberung
+Spieler 3;1553568616815;2405;Eroberung
+Spieler 2;1553568385455;2185;Eroberung
+Spieler 2;1553568616815;1935;Eroberung
 Spieler 1;1553563379527;1440;SuddenDeath
+Spieler 2;1553568506366;1360;Eroberung
 Spieler 1;1553371161720;1320;Eroberung
+Vodka;1553568385455;1315;Eroberung
 Spieler 2;1553563379527;1225;SuddenDeath
 Spieler 1;1553426288304;900;Eroberung
 Spieler 2;1553371161720;470;Eroberung

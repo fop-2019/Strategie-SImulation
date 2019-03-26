@@ -103,7 +103,7 @@ public class JokerMenu extends View{
             		if (players.get(i).getClass() == Human.class) {
             			jokerChoice = new JComboBox<>(jokerTypes);
             		} else {
-            			aiJokers.put(i, ((AI) players.get(i)).chooseJoker());
+            			aiJokers.put(i, ((AI) players.get(i)).chooseJoker(game));
             			jokerChoice = createLabel(aiJokers.get(i).toString(), 16);
             		}
             	}

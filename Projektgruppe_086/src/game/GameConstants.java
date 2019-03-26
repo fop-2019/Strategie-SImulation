@@ -15,7 +15,7 @@ public class GameConstants {
     // Determines how many regions are generated per player,
     // e.g. PlayerCount * 7 for Small, PlayerCount * 14 for Medium and PlayerCount * 21 for Large Maps
     public static final int CASTLES_NUMBER_MULTIPLIER = 7;
-    public static final int CASTLES_AT_BEGINNING = 3;
+    public static final int CASTLES_AT_BEGINNING = 1;
     public static final int TROOPS_PER_ROUND_DIVISOR = 3;
     public static final int CASTLES_AT_BEGINNING_3 = 1; //changed for deathmatch mode : Luca
 
@@ -42,7 +42,7 @@ public class GameConstants {
     public static final Class<?> PLAYER_TYPES[] = {
         Human.class,
         BasicAI.class,
-        // TODO: Add more Player types, like different AIs
+        Vodka.class,
     };
     
     public static final Class<?> JOKER_TYPES[] = {
