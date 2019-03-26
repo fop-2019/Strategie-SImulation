@@ -21,7 +21,7 @@ public abstract class Player {
     public int flagRounds; // changed - dominance : Sander
     public boolean playerwithflag; // changed - dominance : Sander
     public boolean hasGained; // changed - deathmatch : Luca
-    private ArrayList<Kingdom> hasConquered;
+    private ArrayList<Kingdom> hasConquered; //changed - deathmatch : Luca
 
     protected Player(String name, Color color) {
         this.name = name;
@@ -32,7 +32,7 @@ public abstract class Player {
         this.flagRounds = 0; // changed - dominance : Sander
         this.playerwithflag = false; // changed - dominance : Sander
         this.hasGained = false; // changed - deathmatch : Luca
-        this.hasConquered = new ArrayList<Kingdom>();
+        this.hasConquered = new ArrayList<Kingdom>(); //changed - deathmatch : Luca
     }
 
     public int getRemainingTroops() {
