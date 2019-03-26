@@ -438,6 +438,7 @@ public class MapPanel extends JScrollPane {
                             g2.setStroke(new BasicStroke(3));
                             g.setColor(Color.RED);
                         } else {
+                        	
                             g2.setStroke(new BasicStroke(1));
                             g.setColor(Color.WHITE);
                         }
